@@ -98,5 +98,61 @@ df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6) %>%
               "gdppc" # GDP per capita
               ))
 
-# Starting to run some analyses ----
+# Some variables need to have their scales reversed in order to be more intuitive.
+# A custom function to make this more easy on us.
+reverse_scale <- function (x) {
+  max_val <- max(x, na.rm = TRUE)
+  min_val <- min(x, na.rm = TRUE)
+  replace(max_val + min_val - x, is.na(x), NA_integer_)
+}
 
+df1 <- df1 %>% 
+  rowwise(.) %>% 
+  mutate(., across(vars(v2elpeace, v2psbars), reverse_scale)) # This is broken at the moment.
+
+# Starting to run some analyses ----
+library(estimatr) # In order to cluster standard errors.
+
+# Our first hypothesis: as political violence increases, low level bribery will increase.
+# Clustering standard errors by country in order to get a clearer picture.
+
+lm1 <-lm_robust(v2excrptps ~ v2clkill,
+                clusters = country,
+                data = df1)
+
+lm1 <- lm_robust(v2excrptps ~ v2cltort,
+                 clusters = country,
+                 data = df1)
+lm2 <- lm_robust(v2excrptps ~ PTS_A,
+                 clusters = country,
+                 data = df1)
+lm3 <- lm_robust(v2excrptps ~ PTS_H,
+                 clusters = country,
+                 data = df1)
+lm4 <- lm_robust(v2excrptps ~ PTS_S,
+                 clusters = country,
+                 data = df1)
+lm5 <- lm_robust(v2excrptps ~ v2cltort + v2clkill,
+                 clusters = country,
+                 data = df1)
+lm6 <- lm_robust(v2excrptps ~ v2cltort + v2clkill + v2caviol,
+                 clusters = country,
+                 data = df1)
+lm7 <- lm_robust(v2excrptps ~ v2cltort + v2clkill + v2caviol + log(v2regdur+1),
+                 clusters = country,
+                 data = df1)
+
+# Report them ----
+library(modelsummary)
+library(kableExtra)
+
+modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6, lm7),
+             output = 'kableExtra',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             gof_omit = 'AIC|BIC|Log.Lik.|RMSE')
+
+ggplot(df1,
+       aes(x = v2cltort,
+           y = v2excrptps)) +
+  geom_point() +
+  geom_smooth(method = 'lm')
