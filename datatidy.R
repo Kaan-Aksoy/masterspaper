@@ -91,6 +91,7 @@ df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6) %>%
               "v2cacamps", # Polarisation
               "v2caviol", # Non-state political violence
               "v2castate", # State-administered mass mobilisation
+              "v2x_clphy", # Physical violence index
               "polity2", # Polity2 score
               "PTS_A", # Political Terror Scale: Amnesty International
               "PTS_H", # Political Terror Scale: Human Rights Watch
@@ -123,16 +124,29 @@ library(estimatr) # In order to cluster standard errors.
 # Our first hypothesis: as political violence increases, low level bribery will increase.
 # Clustering standard errors by country in order to get a clearer picture.
 
-lm1 <- lm_robust(v2excrptps_rev ~ v2cltort * v2clkill + scale(v2exl_legitperf, center = T, scale = F),
+lm1 <- lm_robust(v2excrptps_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F),
                 clusters = country,
                 data = df1)
-lm2 <- lm_robust(v2exbribe_rev ~ v2cltort * v2clkill + scale(v2exl_legitperf, center = T, scale = F),
+lm2 <- lm_robust(v2exbribe_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F),
                  clusters = country,
                  data = df1)
-lm3 <- lm_robust(v2exthftps_rev ~ v2cltort * v2clkill + scale(v2exl_legitperf, center = T, scale = F),
+lm3 <- lm_robust(v2exthftps_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F),
                  clusters = country,
                  data = df1)
-lm4 <- lm_robust(v2exembez_rev ~ v2cltort * v2clkill + scale(v2exl_legitperf, center = T, scale = F),
+lm4 <- lm_robust(v2exembez_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F),
+                 clusters = country,
+                 data = df1)
+
+lm5 <- lm_robust(v2excrptps_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F) + v2clstown_rev,
+                 clusters = country,
+                 data = df1)
+lm6 <- lm_robust(v2exbribe_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F) + v2clstown_rev,
+                 clusters = country,
+                 data = df1)
+lm7 <- lm_robust(v2exthftps_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F) + v2clstown_rev,
+                 clusters = country,
+                 data = df1)
+lm8 <- lm_robust(v2exembez_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F) + v2clstown_rev,
                  clusters = country,
                  data = df1)
 
@@ -140,13 +154,34 @@ lm4 <- lm_robust(v2exembez_rev ~ v2cltort * v2clkill + scale(v2exl_legitperf, ce
 library(modelsummary)
 library(kableExtra)
 
-modelsummary(list(lm1, lm2, lm3, lm4),
+modelsummary(list("Low-level bribery" = lm1,
+                  "High-level bribery" = lm2,
+                  "Low-level embezzlement" = lm3,
+                  "High-level embezzlement" = lm4),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
-             gof_omit = 'AIC|BIC|Log.Lik.|RMSE')
+             gof_omit = 'AIC|BIC|Log.Lik.|RMSE|Std.Errors',
+             coef_map = c('v2x_clphy' = 'Physical violence index',
+                          'scale(v2exl_legitperf, center = T, scale = F)' = 'Performance legitimisation',
+                          '(Intercept)' = 'Intercept'),
+             notes = list('Standard errors clustered by country.'))
+
+modelsummary(list("Low-level bribery" = lm5,
+                  "High-level bribery" = lm6,
+                  "Low-level embezzlement" = lm7,
+                  "High-level embezzlement" = lm8),
+             output = 'kableExtra',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             gof_omit = 'AIC|BIC|Log.Lik.|RMSE|Std.Errors',
+             coef_map = c('v2x_clphy' = 'Physical violence index',
+                          'scale(v2exl_legitperf, center = T, scale = F)' = 'Performance legitimisation',
+                          'v2clstown_rev' = 'State control of economy',
+                          '(Intercept)' = 'Intercept'),
+             notes = list('Standard errors clustered by country.'))
 
 ggplot(df1,
-       aes(x = (v2cltort * v2clkill),
-           y = v2excrptps)) +
-  geom_point() +
-  geom_smooth(method = 'lm')
+       aes(x = polity2,
+           y = v2x_libdem)) +
+  geom_point()
+
+?scale
