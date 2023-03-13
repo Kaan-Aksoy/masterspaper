@@ -5,10 +5,12 @@ library(labelled)
 library(countrycode)
 
 # Reading in the data and harmonising ----
-mydata1 <- read_delim("~/Documents/Data/GurievTreisman2019Data/Replication/masskillings.txt") %>% 
-  filter(., year >= 1975 & year <= 2013) %>% 
+mydata1 <- read_delim("~/Documents/Data/GurievTreisman2019Data/Replication/masskillings.txt") %>%
+  filter(., year >= 1975 & year <= 2013) %>%
   drop_na(., ccode)
   # naniar::replace_with_na(., replace = list(yrdied = 9999))
+# Not sure if this data is necessary at all.
+
 mydata2 <- read_dta("~/Documents/Data/GurievTreisman2019Data/Replication/DPI2017.dta", skip = 2) %>% 
   filter(., ifs != 0 & year >= 1975 & year <= 2013) %>% 
   mutate_if(., is.labelled, to_factor) %>%
@@ -47,10 +49,15 @@ mydata6 <- read_csv("~/Documents/Data/worldbank_gdppercapita.csv") %>%
   mutate_at(., "year", as.numeric) %>% 
   select(., -c("Indicator Name", "Indicator Code", "Country Code", "Country Name")) %>% 
   na.omit(.)
+mydata7 <- read_dta("~/Documents/Data/StateCapacityDataset_v1.dta") %>% 
+  mutate(., ccode = countrycode(.$iso3,
+                                origin = 'iso3c',
+                                destination = 'cown')) %>% 
+  select(., -c("cntrynum", "country", "iso2", "scode", "iso3"))
 
 # Create a larger dataset ----
 
-df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6) %>%
+df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6, mydata7) %>%
   reduce(left_join, by = c('ccode', 'year')) %>% 
   mutate(., country = country.x,
          .before = "country.x") %>% 
@@ -96,7 +103,10 @@ df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6) %>%
               "PTS_A", # Political Terror Scale: Amnesty International
               "PTS_H", # Political Terror Scale: Human Rights Watch
               "PTS_S", # Political Terror Scale: State Department
-              "gdppc" # GDP per capita
+              "policecap", # Number of police officers per 1000 (logged)
+              "bti_mo", # Monopoly on the use of force (0 low, 10 high)
+              "gdppc", # GDP per capita
+              "system" # Presidential, parliamentary, etc.
               ))
 
 # Some variables need to have their scales reversed in order to be more intuitive.
@@ -124,29 +134,54 @@ library(estimatr) # In order to cluster standard errors.
 # Our first hypothesis: as political violence increases, low level bribery will increase.
 # Clustering standard errors by country in order to get a clearer picture.
 
-lm1 <- lm_robust(v2excrptps_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F),
+lm1 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
+                   scale(v2exl_legitperf, center = T, scale = F) +
+                   v2x_libdem,
                 clusters = country,
                 data = df1)
-lm2 <- lm_robust(v2exbribe_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F),
-                 clusters = country,
-                 data = df1)
-lm3 <- lm_robust(v2exthftps_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F),
-                 clusters = country,
-                 data = df1)
-lm4 <- lm_robust(v2exembez_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F),
+
+lm2 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
+                   scale(v2exl_legitperf, center = T, scale = F) +
+                   v2clstown_rev +
+                   v2x_libdem,
                  clusters = country,
                  data = df1)
 
-lm5 <- lm_robust(v2excrptps_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F) + v2clstown_rev,
+lm3 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
+                   scale(v2exl_legitperf, center = T, scale = F) +
+                   v2clstown_rev +
+                   v2x_libdem +
+                   log(v2regdur+1),
                  clusters = country,
                  data = df1)
-lm6 <- lm_robust(v2exbribe_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F) + v2clstown_rev,
+
+lm4 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
+                   scale(v2exl_legitperf, center = T, scale = F) +
+                   v2clstown_rev +
+                   v2x_libdem +
+                   log(v2regdur+1) +
+                   log(gdppc),
                  clusters = country,
                  data = df1)
-lm7 <- lm_robust(v2exthftps_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F) + v2clstown_rev,
+
+lm5 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
+                   scale(v2exl_legitperf, center = T, scale = F) +
+                   v2clstown_rev +
+                   v2x_libdem +
+                   log(v2regdur+1) +
+                   log(gdppc) + 
+                   policecap,
                  clusters = country,
                  data = df1)
-lm8 <- lm_robust(v2exembez_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, scale = F) + v2clstown_rev,
+
+lm6 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
+                   scale(v2exl_legitperf, center = T, scale = F) +
+                   v2clstown_rev +
+                   v2x_libdem +
+                   log(v2regdur+1) +
+                   log(gdppc) + 
+                   policecap +
+                   bti_mo,
                  clusters = country,
                  data = df1)
 
@@ -154,34 +189,29 @@ lm8 <- lm_robust(v2exembez_rev ~ v2x_clphy + scale(v2exl_legitperf, center = T, 
 library(modelsummary)
 library(kableExtra)
 
-modelsummary(list("Low-level bribery" = lm1,
-                  "High-level bribery" = lm2,
-                  "Low-level embezzlement" = lm3,
-                  "High-level embezzlement" = lm4),
+modelsummary(list("Model 1" = lm1,
+                  "Model 2" = lm2,
+                  "Model 3" = lm3,
+                  "Model 4" = lm4,
+                  "Model 5" = lm5,
+                  "Model 6" = lm6),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              gof_omit = 'AIC|BIC|Log.Lik.|RMSE|Std.Errors',
              coef_map = c('v2x_clphy' = 'Physical violence index',
                           'scale(v2exl_legitperf, center = T, scale = F)' = 'Performance legitimisation',
+                          'v2x_libdem' = 'Liberal democracy index',
+                          'v2clstown_rev' = 'State ownership of economy',
+                          'log(v2regdur + 1)' = 'Regime duration',
+                          'log(gdppc)' = 'GDP per capita',
+                          'policecap' = 'Police officers per 1000',
+                          'bti_mo' = 'Monopoly on force',
                           '(Intercept)' = 'Intercept'),
-             notes = list('Standard errors clustered by country.'))
-
-modelsummary(list("Low-level bribery" = lm5,
-                  "High-level bribery" = lm6,
-                  "Low-level embezzlement" = lm7,
-                  "High-level embezzlement" = lm8),
-             output = 'kableExtra',
-             stars = c('*' = .1, '**' = .05, '***' = .01),
-             gof_omit = 'AIC|BIC|Log.Lik.|RMSE|Std.Errors',
-             coef_map = c('v2x_clphy' = 'Physical violence index',
-                          'scale(v2exl_legitperf, center = T, scale = F)' = 'Performance legitimisation',
-                          'v2clstown_rev' = 'State control of economy',
-                          '(Intercept)' = 'Intercept'),
-             notes = list('Standard errors clustered by country.'))
+             notes = list('Standard errors clustered by country.',
+                          'Dependent variable: Street-level bribery'))
 
 ggplot(df1,
-       aes(x = polity2,
-           y = v2x_libdem)) +
-  geom_point()
-
-?scale
+       aes(x = policecap,
+           y = v2excrptps_rev)) +
+  geom_point() +
+  geom_smooth(method = 'lm')
