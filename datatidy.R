@@ -129,6 +129,16 @@ df1 <- df1 %>%
   )
 
 # Starting to run some analyses ----
+
+# Try a correlation matrix first.
+
+df2 <- df1 %>% 
+  select(., c("v2excrptps", "v2x_clphy", "v2exl_legitperf", "v2clstown",
+              "v2x_libdem", "v2regdur", "gdppc", "policecap", "bti_mo")) %>% 
+  na.omit(.)
+
+as.dist(round(cor(df2, method = "pearson"), 3))
+
 library(estimatr) # In order to cluster standard errors.
 
 # Our first hypothesis: as political violence increases, low level bribery will increase.
@@ -211,7 +221,7 @@ modelsummary(list("Model 1" = lm1,
                           'Dependent variable: Street-level bribery'))
 
 ggplot(df1,
-       aes(x = policecap,
+       aes(x = v2x_clphy,
            y = v2excrptps_rev)) +
   geom_point() +
-  geom_smooth(method = 'lm')
+  geom_smooth(method = 'loess')
