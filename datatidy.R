@@ -60,8 +60,9 @@ mydata7 <- read_dta("~/Documents/Data/StateCapacityDataset_v1.dta") %>%
 df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6, mydata7) %>%
   reduce(left_join, by = c('ccode', 'year')) %>% 
   mutate(., country = country.x,
-         .before = "country.x") %>% 
-  select(., -c("country.x", "country.y", "sftgcode", "ifs", "country.x.x", "country.y.y", "Country")) %>% 
+         .before = "country.x",
+         isdemocracy = if_else(v2x_polyarchy >= 0.42, 1, 0)) %>% 
+  select(., -c("country.x", "country.y", "sftgcode", "ifs", "country.x.x", "country.y.y", "Country")) %>%
   select(., c("country", "year", "v2x_polyarchy", # Electoral democracy index
               "v2x_libdem", # Liberal democracy index
               "v2xel_frefair", # Elections free and fair (aggregate)
@@ -105,6 +106,7 @@ df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6, mydata7) %>%
               "PTS_S", # Political Terror Scale: State Department
               "policecap", # Number of police officers per 1000 (logged)
               "bti_mo", # Monopoly on the use of force (0 low, 10 high)
+              "isdemocracy", # Democracy or not?
               "gdppc", # GDP per capita
               "system" # Presidential, parliamentary, etc.
               ))
@@ -132,72 +134,54 @@ df1 <- df1 %>%
 
 # Try a correlation matrix first.
 
-df2 <- df1 %>% 
+df1 %>% 
   select(., c("v2excrptps", "v2x_clphy", "v2exl_legitperf", "v2clstown",
               "v2x_libdem", "v2regdur", "gdppc", "policecap", "bti_mo")) %>% 
-  na.omit(.)
-
-as.dist(round(cor(df2, method = "pearson"), 3))
+  na.omit(.) %>% 
+  cor(., method = "pearson") %>% 
+  round(., 3)
 
 library(estimatr) # In order to cluster standard errors.
 
 # Our first hypothesis: as political violence increases, low level bribery will increase.
 # Clustering standard errors by country in order to get a clearer picture.
 
-lm1 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
-                   scale(v2exl_legitperf, center = T, scale = F) +
-                   v2x_libdem,
-                clusters = country,
-                data = df1)
+df2 <- df1 %>% 
+  filter(., isdemocracy == 0) %>% 
+  select(., c("country", "v2excrptps_rev", "v2x_clphy", "gdppc",
+              "v2exl_legitperf", "v2clstown", "v2x_libdem", "v2regdur",
+              "policecap", "bti_mo"))
 
-lm2 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
-                   scale(v2exl_legitperf, center = T, scale = F) +
-                   v2clstown_rev +
-                   v2x_libdem,
+lm1 <- lm_robust(v2excrptps_rev ~ v2x_clphy + log(gdppc),
                  clusters = country,
-                 data = df1)
+                 data = df2)
 
-lm3 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
-                   scale(v2exl_legitperf, center = T, scale = F) +
-                   v2clstown_rev +
-                   v2x_libdem +
-                   log(v2regdur+1),
+lm2 <- lm_robust(v2excrptps_rev ~ v2x_clphy + gdppc + log(v2regdur + 1),
                  clusters = country,
-                 data = df1)
+                 data = df2)
 
-lm4 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
-                   scale(v2exl_legitperf, center = T, scale = F) +
-                   v2clstown_rev +
-                   v2x_libdem +
-                   log(v2regdur+1) +
-                   log(gdppc),
-                 clusters = country,
-                 data = df1)
-
-lm5 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
-                   scale(v2exl_legitperf, center = T, scale = F) +
-                   v2clstown_rev +
-                   v2x_libdem +
-                   log(v2regdur+1) +
-                   log(gdppc) + 
+lm3 <- lm_robust(v2excrptps_rev ~ v2x_clphy + gdppc + log(v2regdur + 1) +
                    policecap,
                  clusters = country,
-                 data = df1)
+                 data = df2)
 
-lm6 <- lm_robust(v2excrptps_rev ~ v2x_clphy +
-                   scale(v2exl_legitperf, center = T, scale = F) +
-                   v2clstown_rev +
-                   v2x_libdem +
-                   log(v2regdur+1) +
-                   log(gdppc) + 
-                   policecap +
-                   bti_mo,
-                 clusters = country,
-                 data = df1)
+df2$predicted <- predict(lm1, newdata = df2)
+df2$residuals <- residuals(lm1)
+
+lm1$res_var
 
 # Report them ----
 library(modelsummary)
 library(kableExtra)
+
+modelsummary(list(lm1, lm2, lm3),
+             output = 'kableExtra',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
+             notes = list('Standard errors clustered by country.',
+                          'Dependent variable: Street-level bribery'))
+
+hist(lm3$res_var)
 
 modelsummary(list("Model 1" = lm1,
                   "Model 2" = lm2,
