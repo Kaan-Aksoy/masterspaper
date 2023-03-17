@@ -156,19 +156,14 @@ lm1 <- lm_robust(v2excrptps_rev ~ v2x_clphy + log(gdppc),
                  clusters = country,
                  data = df2)
 
-lm2 <- lm_robust(v2excrptps_rev ~ v2x_clphy + gdppc + log(v2regdur + 1),
+lm2 <- lm_robust(v2excrptps_rev ~ v2x_clphy + log(gdppc) + log(v2regdur + 1),
                  clusters = country,
                  data = df2)
 
-lm3 <- lm_robust(v2excrptps_rev ~ v2x_clphy + gdppc + log(v2regdur + 1) +
+lm3 <- lm_robust(v2excrptps_rev ~ v2x_clphy + log(gdppc) + log(v2regdur + 1) +
                    policecap,
                  clusters = country,
                  data = df2)
-
-df2$predicted <- predict(lm1, newdata = df2)
-df2$residuals <- residuals(lm1)
-
-lm1$res_var
 
 # Report them ----
 library(modelsummary)
@@ -180,8 +175,6 @@ modelsummary(list(lm1, lm2, lm3),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              notes = list('Standard errors clustered by country.',
                           'Dependent variable: Street-level bribery'))
-
-hist(lm3$res_var)
 
 modelsummary(list("Model 1" = lm1,
                   "Model 2" = lm2,
@@ -209,3 +202,5 @@ ggplot(df1,
            y = v2excrptps_rev)) +
   geom_point() +
   geom_smooth(method = 'loess')
+
+quantile(df2$v2x_clphy, probs = .8)
