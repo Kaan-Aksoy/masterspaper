@@ -1,14 +1,40 @@
+---
+title: "Preliminary Findings"
+mainfont: Times New Roman
+author: "Kaan Aksoy"
+date: "20 March 2023"
+header-includes:
+  - \usepackage{setspace}\doublespacing
+  - \usepackage{booktabs}
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+    extra_dependencies: float
+    fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, include = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r Libraries}
 # Load libraries ----
 library(tidyverse)
 library(haven)
 library(labelled)
 library(countrycode)
+library(estimatr) # In order to cluster standard errors.
+library(modelsummary)
+```
+
+
+```{r Data loading and preparation}
+library(kableExtra)
 
 # Reading in the data and harmonising ----
 mydata1 <- read_delim("~/Documents/Data/GurievTreisman2019Data/Replication/masskillings.txt") %>%
   filter(., year >= 1975 & year <= 2013) %>%
   drop_na(., ccode)
-  # naniar::replace_with_na(., replace = list(yrdied = 9999))
 # Not sure if this data is necessary at all.
 
 mydata2 <- read_dta("~/Documents/Data/GurievTreisman2019Data/Replication/DPI2017.dta", skip = 2) %>% 
@@ -62,7 +88,7 @@ df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6, mydata7) %>%
   mutate(., country = country.x,
          .before = "country.x",
          isdemocracy = as_factor(if_else(v2x_polyarchy >= 0.42, 1, 0)),
-         group = as_factor(if_else(v2x_clphy <= quantile(df1$v2x_clphy, probs = .2, na.rm = T), 1, 0))
+         group = as_factor(if_else(v2x_clphy <= quantile(.$v2x_clphy, probs = .2, na.rm = T), 1, 0))
          ) %>% 
   select(., -c("country.x", "country.y", "sftgcode", "ifs", "country.x.x", "country.y.y", "Country")) %>%
   select(., c("country", "year", "v2x_polyarchy", # Electoral democracy index
@@ -132,29 +158,8 @@ df1 <- df1 %>%
          v2mecenefm_rev = scale(reversr(v2mecenefm), center = TRUE, scale = FALSE),
          v2mecenefi_rev = scale(reversr(v2mecenefi), center = TRUE, scale = FALSE)
   )
-# Starting to run some analyses ----
-
-# Try a correlation matrix first.
-
-df1 %>% 
-  select(., c("v2excrptps", "v2x_clphy", "v2clstown",
-              "v2x_polyarchy", "v2regdur", "gdppc")) %>% 
-  na.omit(.) %>% 
-  cor(., method = "pearson") %>% 
-  round(., 3)
-
-library(estimatr) # In order to cluster standard errors.
-
-# Our first hypothesis: as political violence increases, low level bribery will increase.
-# Clustering standard errors by country in order to get a clearer picture.
-
-df2 <- df1 %>% 
-  filter(., isdemocracy == 0) %>% 
-  select(., c("country", "v2excrptps_rev", "v2x_clphy", "gdppc", "v2exl_legitideol", 
-              "v2exl_legitlead", "v2exl_legitperf", "v2clstown", "v2x_libdem", "v2regdur",
-              "v2psoppaut", "policecap", "bti_mo", "v2csreprss", "group"))
-
-
+```
+```{r First four models, include=TRUE}
 lm1 <- lm_robust(v2excrptps_rev ~ v2exl_legitperf,
                  subset = (df1$group == 1 &
                              df1$isdemocracy == 0),
@@ -179,8 +184,6 @@ lm4 <- lm_robust(v2excrptps_rev ~ v2x_clphy + log(gdppc) + v2x_clphy:log(gdppc) 
                  clusters = country,
                  data = df1)
 # Report them ----
-library(modelsummary)
-library(kableExtra)
 
 modelsummary(list(lm1, lm2, lm3, lm4),
              output = 'kableExtra',
@@ -194,8 +197,12 @@ modelsummary(list(lm1, lm2, lm3, lm4),
              notes = list('Standard errors clustered by country.',
                           'Sample: 80th percentile of the physical violence index among non-democracies')) %>% 
   add_header_above(c(" " = 1,
-                     "Low-level bribery" = 4))
+                     "Low-level bribery" = 4)) %>% 
+  kable_styling(latex_options = "HOLD_position")
+```
+The four models above have the sample restricted to the 80th percentile of the physical violence index among non-democracies.
 
+```{r Next four models, include=TRUE}
 lm5 <- lm_robust(v2excrptps_rev ~ v2exl_legitperf,
                  subset = (df1$isdemocracy == 0),
                  clusters = country,
@@ -228,34 +235,8 @@ modelsummary(list(lm5, lm6, lm7, lm8),
              notes = list('Standard errors clustered by country.',
                           'Sample: All non-democracies')) %>% 
   add_header_above(c(" " = 1,
-                     "Low-level bribery" = 4))
+                     "Low-level bribery" = 4)) %>%
+  kable_styling(latex_options = "HOLD_position")
+```
 
-library(RColorBrewer)
-
-
-ggplot(df1,
-       aes(x = v2x_clphy,
-           y = v2excrptps_rev,
-           group = group,
-           colour = group)) +
-  geom_point() +
-  scale_colour_brewer(palette = "Dark2")
-
-ggplot(df1,
-       aes(x = v2exl_legitperf,
-           y = v2excrptps_rev)) +
-  geom_point() +
-  geom_smooth(method = 'loess')
-
-quantile(df2$v2x_clphy, probs = .8)
-
-df1 %>%
-  filter(., isdemocracy == 0) %>%
-  ggplot(., aes(x = v2exl_legitperf,
-                y = v2excrptps_rev,
-                group = group,
-                colour = group)) +
-  geom_point(alpha = .25) +
-  geom_smooth(method = 'loess') +
-  scale_colour_brewer(palette = "Dark2")
-
+The results above include all non-democracies.
