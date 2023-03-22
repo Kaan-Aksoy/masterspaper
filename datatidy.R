@@ -62,9 +62,11 @@ df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6, mydata7) %>%
   mutate(., country = country.x,
          .before = "country.x",
          isdemocracy = as_factor(if_else(v2x_polyarchy >= 0.42, 1, 0)),
-         group = as_factor(if_else(v2x_clphy <= quantile(df1$v2x_clphy, probs = .2, na.rm = T), 1, 0))
+         group = as_factor(if_else(v2x_clphy <= quantile(.$v2x_clphy, probs = .2, na.rm = T), 1, 0))
          ) %>% 
-  select(., -c("country.x", "country.y", "sftgcode", "ifs", "country.x.x", "country.y.y", "Country")) %>%
+  select(., -c("country.x", "country.y", "sftgcode", "ifs", "country.x.x", "country.y.y", "Country"))
+
+df1 <- df1 %>% 
   select(., c("country", "year", "v2x_polyarchy", # Electoral democracy index
               "v2x_libdem", # Liberal democracy index
               "v2xel_frefair", # Elections free and fair (aggregate)
@@ -133,15 +135,6 @@ df1 <- df1 %>%
          v2mecenefi_rev = scale(reversr(v2mecenefi), center = TRUE, scale = FALSE)
   )
 # Starting to run some analyses ----
-
-# Try a correlation matrix first.
-
-df1 %>% 
-  select(., c("v2excrptps", "v2x_clphy", "v2clstown",
-              "v2x_polyarchy", "v2regdur", "gdppc")) %>% 
-  na.omit(.) %>% 
-  cor(., method = "pearson") %>% 
-  round(., 3)
 
 library(estimatr) # In order to cluster standard errors.
 
@@ -229,33 +222,3 @@ modelsummary(list(lm5, lm6, lm7, lm8),
                           'Sample: All non-democracies')) %>% 
   add_header_above(c(" " = 1,
                      "Low-level bribery" = 4))
-
-library(RColorBrewer)
-
-
-ggplot(df1,
-       aes(x = v2x_clphy,
-           y = v2excrptps_rev,
-           group = group,
-           colour = group)) +
-  geom_point() +
-  scale_colour_brewer(palette = "Dark2")
-
-ggplot(df1,
-       aes(x = v2exl_legitperf,
-           y = v2excrptps_rev)) +
-  geom_point() +
-  geom_smooth(method = 'loess')
-
-quantile(df2$v2x_clphy, probs = .8)
-
-df1 %>%
-  filter(., isdemocracy == 0) %>%
-  ggplot(., aes(x = v2exl_legitperf,
-                y = v2excrptps_rev,
-                group = group,
-                colour = group)) +
-  geom_point(alpha = .25) +
-  geom_smooth(method = 'loess') +
-  scale_colour_brewer(palette = "Dark2")
-
