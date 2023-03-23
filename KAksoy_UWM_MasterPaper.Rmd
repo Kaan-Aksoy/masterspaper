@@ -1,0 +1,49 @@
+---
+title: "[Title of the Paper Comes Here]"
+subtitle: |
+  | Placeholder
+  | Placeholder
+author: "Kaan Aksoy"
+date: "[Date of Submission/Defence Comes Here]"
+mainfont: Times New Roman
+header-includes:
+  - \usepackage{setspace}\doublespacing
+  - \usepackage{booktabs}
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+    extra_dependencies: float
+    fig_caption: yes
+citation_package: biblatex
+bibliography: thesiscitations.bib
+---
+```{=tex}
+\pagenumbering{gobble}
+\newpage
+\pagenumbering{arabic}
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, include = FALSE, message = FALSE, warning = FALSE)
+```
+
+## Introduction
+
+## Authoritarian Governments and Corruption
+
+## Data
+
+```{r Library loading}
+library(tidyverse)
+library(estimatr) # To cluster standard errors
+library(modelsummary) # For neat reporting tables
+```
+```{r Data loading}
+# Load data ----
+mydata1 <- read_csv("~/Documents/Data/V_Dem_v12.csv") %>% 
+  filter(., v2x_polyarchy <= 0.42)
+```
+
+
+
+## Bibliography
+
