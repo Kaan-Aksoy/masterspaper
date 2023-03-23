@@ -6,7 +6,6 @@ library(countrycode)
 
 # Reading in the data and harmonising ----
 mydata1 <- read_delim("~/Documents/Data/GurievTreisman2019Data/Replication/masskillings.txt") %>%
-  filter(., year >= 1975 & year <= 2013) %>%
   drop_na(., ccode)
   # naniar::replace_with_na(., replace = list(yrdied = 9999))
 # Not sure if this data is necessary at all.
@@ -116,6 +115,7 @@ df1 <- df1 %>%
               "system" # Presidential, parliamentary, etc.
               ))
 
+
 # Some variables need to have their scales reversed in order to be more intuitive.
 reversr <- function (x, na.rm = T) {
   min(x, na.rm = T) - x + max(x, na.rm = T)
@@ -137,6 +137,7 @@ df1 <- df1 %>%
 # Starting to run some analyses ----
 
 library(estimatr) # In order to cluster standard errors.
+library(pcse) # Panel-corrected standard errors
 
 # Our first hypothesis: as political violence increases, low level bribery will increase.
 # Clustering standard errors by country in order to get a clearer picture.
@@ -145,10 +146,9 @@ df2 <- df1 %>%
   filter(., isdemocracy == 0) %>% 
   select(., c("country", "v2excrptps_rev", "v2x_clphy", "gdppc", "v2exl_legitideol", 
               "v2exl_legitlead", "v2exl_legitperf", "v2clstown", "v2x_libdem", "v2regdur",
-              "v2psoppaut", "policecap", "bti_mo", "v2csreprss", "group"))
+              "v2psoppaut", "policecap", "bti_mo", "v2csreprss", "group", "v2x_polyarchy"))
 
-
-lm1 <- lm_robust(v2excrptps_rev ~ v2exl_legitperf,
+lm1 <- lm_robust(v2excrptps_rev ~ v2exl_legitperf + v2x_polyarchy,
                  subset = (df1$group == 1 &
                              df1$isdemocracy == 0),
                  clusters = country,
@@ -189,22 +189,23 @@ modelsummary(list(lm1, lm2, lm3, lm4),
   add_header_above(c(" " = 1,
                      "Low-level bribery" = 4))
 
-lm5 <- lm_robust(v2excrptps_rev ~ v2exl_legitperf,
+lm5 <- lm_robust(v2excrptps_rev ~ v2exl_legitperf + v2x_polyarchy,
                  subset = (df1$isdemocracy == 0),
                  clusters = country,
                  data = df1)
 
-lm6 <- lm_robust(v2excrptps_rev ~ v2x_clphy,
+lm6 <- lm_robust(v2excrptps_rev ~ v2x_clphy + v2x_polyarchy,
                  subset = (df1$isdemocracy == 0),
                  clusters = country,
                  data = df1)
 
-lm7 <- lm_robust(v2excrptps_rev ~ v2x_clphy + log(gdppc) + v2x_clphy:log(gdppc),
+lm7 <- lm_robust(v2excrptps_rev ~ v2x_clphy + log(gdppc) + v2x_clphy:log(gdppc) + v2x_polyarchy,
                  subset = (df1$isdemocracy == 0),
                  clusters = country,
                  data = df1)
 
-lm8 <- lm_robust(v2excrptps_rev ~ v2x_clphy + log(gdppc) + v2x_clphy:log(gdppc) + v2exl_legitperf,
+lm8 <- lm_robust(v2excrptps_rev ~ v2x_clphy + log(gdppc) + v2x_clphy:log(gdppc) +
+                   v2exl_legitperf + v2x_polyarchy,
                  subset = (df1$isdemocracy == 0),
                  clusters = country,
                  data = df1)
@@ -222,3 +223,4 @@ modelsummary(list(lm5, lm6, lm7, lm8),
                           'Sample: All non-democracies')) %>% 
   add_header_above(c(" " = 1,
                      "Low-level bribery" = 4))
+range(df1$v2x_polyarchy[df1$isdemocracy == 0], na.rm = T)
