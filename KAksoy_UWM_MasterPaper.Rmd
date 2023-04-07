@@ -14,6 +14,7 @@ output:
     latex_engine: xelatex
     extra_dependencies: float
     fig_caption: yes
+indent: true
 citation_package: biblatex
 bibliography: thesiscitations.bib
 ---
@@ -25,25 +26,122 @@ bibliography: thesiscitations.bib
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, include = FALSE, message = FALSE, warning = FALSE)
 ```
+```{r Library loading}
+# Load libraries ----
+library(tidyverse)
+library(haven)
+library(estimatr)     # To cluster standard errors
+library(modelsummary) # For neat reporting tables
+library(kableExtra)   # For additional table formatting
+```
+```{r Data loading and cleaning}
+# Load and clean data ----
+mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
+  filter(., v2x_polyarchy <= 0.42) # To filter out the non-democracies.
 
+mydata2 <- read_delim("~/Documents/Data/masskillings.txt") %>% 
+  mutate(., masskilling = as_factor(lag(ongoing, n = 3)),
+         country_name = country,
+         country_text_id = sftgcode) %>% 
+  select(., c("country_text_id", "year", "masskilling")) %>% 
+  na.omit(.)
+
+# Merge as necessary ----
+df1 <- list(mydata1, mydata2) %>% 
+  reduce(left_join, by = c("country_text_id", "year"))
+```
+```{r Reversr}
+# Write a function to reverse the scales of some unintuitively coded variables.
+reversr <- function (x, na.rm = T) {
+  min(x, na.rm = T) - x + max(x, na.rm = T)
+}
+```
 ## Introduction
+
+Corruption is prevalent in the world, particularly among authoritarian states. Intuitively, we expect that authoritarian regimes be more corrupt than their democratic counterparts, due to the relative absence of institutional restraints. For most part, this holds true. Recent literature, however, suggests that not all authoritarian regimes are the same. Increasingly, authoritarian regimes are shifting away from heavy-handed methods of maintaining control. Instead of brute force, they are transitioning towards more restrained methods of perpetuating themselves. This paper intends to explore one dimension of this transition, by drawing on the "informational autocracy" theory proposed by @guriev2019.
+
+My theory proposes that as the costs of repression in a system increase, the level of low-level bribery will decrease. The reasoning follows that if repression were without cost (or carries a tolerable cost), the dictator has no incentive to not repress. Therefore, repression cost being high is a necessary condition for the incentive mechanisms to kick in. When these costs are high, there is an increasing pressure to utilise what @guriev2019 refer to as "low-violence methods" (p. 106).
+
+In exploring the relationship between autocratic governance and corruption, I contribute to the literature on corruption by disaggregating the concept of corruption. Corruption is commonly conceptualised and operationalised as a monolithic whole. There is little differentiation between corruption taking place in different echelons of government or society. Furthermore, there is often little differentiation between embezzlement and bribery, which are two distinct forms of corruption. I aim to fill this gap in the literature by seeking to understand how autocratic governance influences the latter.
 
 ## Authoritarian Governments and Corruption
 
+Increasingly, autocracies are transitioning away from heavy-handed methods to maintain control. Brutally repressive dictatorships such as those of Samuel Doe's regime in Liberia or Mobutu Sese Seko's Congo are an increasingly rare sight. This, however, does not necessarily mean that dictatorships are vanishing. Instead, this trend has also witnessed dictators changing the means by which they cling onto power. As trends in the world shift and liberal democratic models of governance seem more to be the global norm, autocrats utilise more targeted, precise, less violent, and generally less overt means of repressing dissent.
+
+There are various factors which explain this change in strategies, such as economic modernisation and higher levels of education [@guriev2019], **ADD MORE REASONS HERE**
+
+One of the means by which rulers maintain their grip on power is by creating the impression of competence [@lamberova2021; @guriev2019; @gerschewski2013]. Competence is a broad concept, but within the framework of this paper, it generally refers to delivering positive economic outcomes. These outcomes are typically positive economic growth rates, lower unemployment rates, stable or decreasing costs of living, and acceptable levels of inflation. 
+
+Formulating a robust theoretical definition of corruption and what it entails is beyond the scope of this paper. Corruption is subjective: what is considered corrupt and is illegal in one country or society may not necessarily be either in other contexts. Colloquially, however, we often refer to it as the utilisation of public resources for private interests. Such a definition fulfils my purpose here for this paper, which is to unpack the conceptual bundle which is "corruption".
+
+We often conceptualise corruption as a monolithic phenomenon. Rarely do we distinguish between corruption based on who does it, and the method by which it is done.  
+
 ## Data
 
-```{r Library loading}
-library(tidyverse)
-library(estimatr) # To cluster standard errors
-library(modelsummary) # For neat reporting tables
+In order to accomplish the goals stated in the previous section, I will draw on a number of different data. First and foremost, the Varieties of Democracy Dataset [@vdem2023] is used for a vast majority of this paper. The Varieties of Democracy (V-Dem) data is an expert-coded database encompassing virtually every state from the 19th century onwards. It contains more than 4,500 variables, gauging various aspects of a state, from its concentration of political power to its levels of educational indoctrination. However, the nature of the data has disadvantages alongside its advantages.
+
+The first and foremost advantage using the V-Dem data brings is that it provides some measure for the concept I am trying to capture. Due to its nature, corruption is inherently elusive to a researcher's eyes. It necessitates either the development of clever proxy measures, or some type of subjective evaluation of a country's level of corruption. The V-Dem data provides the latter. It provides a reliable estimate of every country's levels of corruption in various spheres with a replicable and transparent codebook. The second advantage of utilising V-Dem data is the sheer number of data points it provides. While more data is not necessarily always good, the high number of data points contained within permits analysis to be sufficiently robust.
+
+The utilisation of V-Dem data is not without its weaknesses. A fundamental issue that arises with such a dataset is the inevitable subjectivity of the subject matter. Inherently, this paper assumes that a certain type of political behaviour---that defined by the researchers of the V-Dem project---necessarily constitutes corruption. 
+
+```{r Models 1-7}
+# Here, I reverse several variables as they are coded unintuitively. For instance,
+# `v2excrptps` (public sector bribery) is originally coded 4 for virtually none,
+# and 0 for rampant. This is unintuitive, particularly when interpreting regression
+# results, and therefore, I have reversed the scale. `v2x_clphy` (physical violence
+# index) is of a similar nature.
+
+lm1 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy),
+                 data = mydata1,
+                 clusters = country_id)
+
+lm2 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf,
+                 data = mydata1,
+                 clusters = country_id)
+
+lm3 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
+                 data = mydata1,
+                 clusters = country_id)
+
+lm4 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc),
+                 data = mydata1,
+                 clusters = country_id)
+
+lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy,
+                 data = mydata1,
+                 clusters = country_id)
+
+lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy + masskilling,
+                 data = df1,
+                 clusters = country_id)
+
+lm7 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy + masskilling,
+                 data = df1,
+                 clusters = country_id)
 ```
-```{r Data loading}
-# Load data ----
-mydata1 <- read_csv("~/Documents/Data/V_Dem_v12.csv") %>% 
-  filter(., v2x_polyarchy <= 0.42)
+```{r Reporting Models 1-7, include=TRUE}
+# Report the new model ----
+modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6, lm7),
+             output = 'kableExtra',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
+                          'v2exl_legitperf' = 'Performance legitimation',
+                          'log(e_gdppc)' = 'Logged GDP per capita',
+                          'v2x_polyarchy' = 'Electoral democracy index',
+                          'masskilling1' = 'Mass killing (3 years)',
+                          '(Intercept)' = 'Intercept'),
+             gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
+             notes = list('Standard errors clustered by country.')) %>%
+  add_header_above(c(" " = 1,
+                     "Low-level bribery" = 7)) %>% 
+  kable_styling(latex_options = "HOLD_position")
 ```
 
 
 
-## Bibliography
+## References
 
