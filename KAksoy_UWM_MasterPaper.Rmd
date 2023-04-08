@@ -1,5 +1,5 @@
 ---
-title: "[Title of the Paper Comes Here]"
+title: "Unpacking Corruption: The Relationship between Street-Level Bribery and Maintaining Political Power"
 subtitle: |
   | Placeholder
   | Placeholder
@@ -24,7 +24,12 @@ bibliography: thesiscitations.bib
 \pagenumbering{arabic}
 ```
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, include = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	include = FALSE
+)
 ```
 ```{r Library loading}
 # Load libraries ----
@@ -60,7 +65,7 @@ reversr <- function (x, na.rm = T) {
 
 Corruption is prevalent in the world, particularly among authoritarian states. Intuitively, we expect that authoritarian regimes be more corrupt than their democratic counterparts, due to the relative absence of institutional restraints. For most part, this holds true. Recent literature, however, suggests that not all authoritarian regimes are the same. Increasingly, authoritarian regimes are shifting away from heavy-handed methods of maintaining control. Instead of brute force, they are transitioning towards more restrained methods of perpetuating themselves. This paper intends to explore one dimension of this transition, by drawing on the "informational autocracy" theory proposed by @guriev2019.
 
-My theory proposes that as the costs of repression in a system increase, the level of low-level bribery will decrease. The reasoning follows that if repression were without cost (or carries a tolerable cost), the dictator has no incentive to not repress. Therefore, repression cost being high is a necessary condition for the incentive mechanisms to kick in. When these costs are high, there is an increasing pressure to utilise what @guriev2019 refer to as "low-violence methods" (p. 106).
+My theory proposes that as the costs of repression in a system increase, the level of low-level bribery will decrease. The reasoning follows that if repression were without cost (or carries a tolerable cost), the dictator has no incentive to not repress. Therefore, repression cost being high is a necessary condition for the incentive mechanisms to kick in. When these costs are high, there is an increasing pressure to utilise what @guriev2019 refer to as "low-violence methods" (106).
 
 In exploring the relationship between autocratic governance and corruption, I contribute to the literature on corruption by disaggregating the concept of corruption. Corruption is commonly conceptualised and operationalised as a monolithic whole. There is little differentiation between corruption taking place in different echelons of government or society. Furthermore, there is often little differentiation between embezzlement and bribery, which are two distinct forms of corruption. I aim to fill this gap in the literature by seeking to understand how autocratic governance influences the latter.
 
@@ -68,13 +73,19 @@ In exploring the relationship between autocratic governance and corruption, I co
 
 Increasingly, autocracies are transitioning away from heavy-handed methods to maintain control. Brutally repressive dictatorships such as those of Samuel Doe's regime in Liberia or Mobutu Sese Seko's Congo are an increasingly rare sight. This, however, does not necessarily mean that dictatorships are vanishing. Instead, this trend has also witnessed dictators changing the means by which they cling onto power. As trends in the world shift and liberal democratic models of governance seem more to be the global norm, autocrats utilise more targeted, precise, less violent, and generally less overt means of repressing dissent.
 
-There are various factors which explain this change in strategies, such as economic modernisation and higher levels of education [@guriev2019], **ADD MORE REASONS HERE**
-
 One of the means by which rulers maintain their grip on power is by creating the impression of competence [@lamberova2021; @guriev2019; @gerschewski2013]. Competence is a broad concept, but within the framework of this paper, it generally refers to delivering positive economic outcomes. These outcomes are typically positive economic growth rates, lower unemployment rates, stable or decreasing costs of living, and acceptable levels of inflation. 
 
-Formulating a robust theoretical definition of corruption and what it entails is beyond the scope of this paper. Corruption is subjective: what is considered corrupt and is illegal in one country or society may not necessarily be either in other contexts. Colloquially, however, we often refer to it as the utilisation of public resources for private interests. Such a definition fulfils my purpose here for this paper, which is to unpack the conceptual bundle which is "corruption".
+Whatever the precise mechanism of holding power may be, the fact remains that autocratic leaders generally seek to maintain power for as long as they do. This is an assumption, but I believe that it is an easily defended assumption. While also true of democratic settings, autocratic leaders face additional threats should they lose power: the loss of accumulated wealth, freedom, or even the lives of their loved ones or themselves. Put more simply, there tends to be far more at risk for an autocrat who loses power.
 
-We often conceptualise corruption as a monolithic phenomenon. Rarely do we distinguish between corruption based on who does it, and the method by which it is done.  
+Corruption is an integral part of maintaining power. One way of looking at maintaining power is through the distributing private goods to the crucial elements of a regime [@demesquita2005]. In this framework, the ruler is incentivised to identify the precise coalition he requires to maintain in order to continue ruling. This coalition, ideally as narrow and limited as possible, is kept on board with the ruler through the issuing of private goods---luxury cars, extravagant dinners, aged whisky^[News outlets have reported that the late North Korean leader, Kim Jong-il, spent as much as $30 million annually on imported liquor.], decadent mansions---while effectively disenfranchising those not in the ruling elite. While there are good criticisms of @demesquita2005, the selectorate theory is useful in that it allows us the bridge the gap between the pursuit of private wealth and maintaining political power. In essence, private wealth in the context of an authoritarian system is translated into political power in a scale usually not observed in democratic societies.
+
+Yet, this is not the only type of corruption which pervades societies. There is a difference between "grand" and "petty" corruption [@amundsen1999; @doig2013], with the former referring to lawmakers being corrupt, while the latter can refer to anything from bureaucrats to the most local of civil servants. 
+
+Formulating a robust theoretical definition of corruption and what it entails is beyond the scope of this paper. Corruption is subjective: what is considered corrupt and is illegal in one country or society may not necessarily be either in other contexts. For the purposes of this paper, however, I utilise the World Bank's defintion of it, referring to it as "the abuse of public power for private benefit". Such a definition fulfils my purpose here for this paper, which is to unpack the conceptual bundle which is "corruption" and empirically test how it relates to the maintenance of political power.
+
+We often conceptualise corruption as a monolithic phenomenon. Rarely do we distinguish between corruption based on who does it, and the method by which it is done.  I propose that there are different types of corruption. The V-Dem database codes four separate variables on corruption. These are not only differentiated by the level of corruption, but also by the nature of the corruption taking place. The data differentiates between "executive" and "public sector" corruption, the former relating to the "head of state, the head of government, and cabinet ministers" [@vdem_codebook2023, pp. 114-115] while the latter refers to "typical person[s] employed by the public sector, excluding the military" [@vdem_codebook2023, pp. 115-116]. In addition to this, the V-Dem project also draws a line between "embezzlement and theft" and "bribery". Embezzlement and theft in their conceptualisation refers to the misappropriation of public funds for personal use. In contrast, bribery refers to the granting of favours in exchange for material gain.
+
+When phrased so, it is not difficult to understand why I wish to study these two concepts separately. They are *different* types of problems, and while they are similar, they can reasonably be thought to lead to different outcomes in governance. This is true not only of the difference between embezzlement and bribery, but also the difference in the status of those committing this corruption. The consequences of cabinet-level officials embezzling funds *or* taking bribes will most certainly be different from that of a patrolling police officer doing the same. In a bit of irony, I propose that decoupling these two concepts from the larger concept of "corruption" allows a more nuanced approach to the study of corruption as a whole.
 
 ## Data
 
@@ -82,7 +93,9 @@ In order to accomplish the goals stated in the previous section, I will draw on 
 
 The first and foremost advantage using the V-Dem data brings is that it provides some measure for the concept I am trying to capture. Due to its nature, corruption is inherently elusive to a researcher's eyes. It necessitates either the development of clever proxy measures, or some type of subjective evaluation of a country's level of corruption. The V-Dem data provides the latter. It provides a reliable estimate of every country's levels of corruption in various spheres with a replicable and transparent codebook. The second advantage of utilising V-Dem data is the sheer number of data points it provides. While more data is not necessarily always good, the high number of data points contained within permits analysis to be sufficiently robust.
 
-The utilisation of V-Dem data is not without its weaknesses. A fundamental issue that arises with such a dataset is the inevitable subjectivity of the subject matter. Inherently, this paper assumes that a certain type of political behaviour---that defined by the researchers of the V-Dem project---necessarily constitutes corruption. 
+The utilisation of V-Dem data is not without its weaknesses. A fundamental issue that arises with such a dataset is the inevitable subjectivity of the subject matter. Inherently, this paper assumes that a certain type of political behaviour---that defined by the researchers of the V-Dem project---necessarily constitutes corruption. This is an inherent limitation of this paper. This data type is inextricably tied to how corruption is conceptualised in the advanced, post-industrial societies of the world, and may consider behaviours considered ordinary, ethical, or legal in other context to be corrupt, or vice versa.
+
+Other data are also utilised, though not in the primary analyses. @guriev2019 provide 
 
 ```{r Models 1-7}
 # Here, I reverse several variables as they are coded unintuitively. For instance,
@@ -144,4 +157,8 @@ modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6, lm7),
 
 
 ## References
+
+<div id="refs"></div>
+
+## Appendices
 
