@@ -1,10 +1,7 @@
 ---
 title: "Unpacking Corruption: The Relationship between Street-Level Bribery and Maintaining Political Power"
-subtitle: |
-  | Placeholder
-  | Placeholder
 author: "Kaan Aksoy"
-date: "[Date of Submission/Defence Comes Here]"
+date: "8th May 2023"
 mainfont: Times New Roman
 header-includes:
   - \usepackage{setspace}\doublespacing
@@ -38,6 +35,7 @@ library(haven)
 library(estimatr)     # To cluster standard errors
 library(modelsummary) # For neat reporting tables
 library(kableExtra)   # For additional table formatting
+library(RColorBrewer) # For colour-blind friendly palettes
 ```
 ```{r Data loading and cleaning}
 # Load and clean data ----
@@ -73,19 +71,29 @@ In exploring the relationship between autocratic governance and corruption, I co
 
 Increasingly, autocracies are transitioning away from heavy-handed methods to maintain control. Brutally repressive dictatorships such as those of Samuel Doe's regime in Liberia or Mobutu Sese Seko's Congo are an increasingly rare sight. This, however, does not necessarily mean that dictatorships are vanishing. Instead, this trend has also witnessed dictators changing the means by which they cling onto power. As trends in the world shift and liberal democratic models of governance seem more to be the global norm, autocrats utilise more targeted, precise, less violent, and generally less overt means of repressing dissent.
 
-One of the means by which rulers maintain their grip on power is by creating the impression of competence [@lamberova2021; @guriev2019; @gerschewski2013]. Competence is a broad concept, but within the framework of this paper, it generally refers to delivering positive economic outcomes. These outcomes are typically positive economic growth rates, lower unemployment rates, stable or decreasing costs of living, and acceptable levels of inflation. 
+One of the means by which rulers maintain their grip on power is by creating the impression of competence [@lamberova2021; @guriev2019; @gerschewski2013]. Competence is a broad concept and difficult to pin down, but within the framework of this paper, it generally refers to delivering positive economic outcomes. These outcomes are typically high economic growth rates, lower unemployment rates, stable or decreasing costs of living, and acceptable levels of inflation. 
 
-Whatever the precise mechanism of holding power may be, the fact remains that autocratic leaders generally seek to maintain power for as long as they do. This is an assumption, but I believe that it is an easily defended assumption. While also true of democratic settings, autocratic leaders face additional threats should they lose power: the loss of accumulated wealth, freedom, or even the lives of their loved ones or themselves. Put more simply, there tends to be far more at risk for an autocrat who loses power.
+Whatever the precise mechanism of holding power may be, the fact remains that autocratic leaders generally seek to maintain power for as long as they do. This is an assumption, but I believe that it is an easily defended assumption. It is an extremely common assumption of studying the behaviour of politicians in democratic settings, and I argue that the factors incentivising politicians in democratic settings to maintain their status are only exacerbated in authoritarian settings. Autocratic leaders face additional threats should they lose power: the loss of accumulated wealth, freedom, or even the lives of their loved ones or themselves. Put more simply, there tends to be far more at risk for an autocrat who loses power compared to a democratic incumbent who loses an election. If anything, the  likelihood that an autocrat being ousted through an election is far less than the likelihood of their ouster coming about by way of a violent coup d'etat, revolution, or palace coup is one piece of evidence.
 
-Corruption is an integral part of maintaining power. One way of looking at maintaining power is through the distributing private goods to the crucial elements of a regime [@demesquita2005]. In this framework, the ruler is incentivised to identify the precise coalition he requires to maintain in order to continue ruling. This coalition, ideally as narrow and limited as possible, is kept on board with the ruler through the issuing of private goods---luxury cars, extravagant dinners, aged whisky^[News outlets have reported that the late North Korean leader, Kim Jong-il, spent as much as $30 million annually on imported liquor.], decadent mansions---while effectively disenfranchising those not in the ruling elite. While there are good criticisms of @demesquita2005, the selectorate theory is useful in that it allows us the bridge the gap between the pursuit of private wealth and maintaining political power. In essence, private wealth in the context of an authoritarian system is translated into political power in a scale usually not observed in democratic societies.
+Much of the literature on corruption is derived from how corrupt practices take place in democratic settings. Studies show that electoral systems are influential on corruption [@torsten2003], and that clientelism---where narrow interests are prioritised by politicians in exchange for votes---thrives in weak institutional contexts [@shefter1977]. The framework of an authoritarian model of governance, on the other hand, brings an additional dimension to our perspective on corruption. It is no longer a mere dysfunction of a system ideally operating without it, but instead part and parcel of the system.
 
-Yet, this is not the only type of corruption which pervades societies. There is a difference between "grand" and "petty" corruption [@amundsen1999; @doig2013], with the former referring to lawmakers being corrupt, while the latter can refer to anything from bureaucrats to the most local of civil servants. 
+Corruption is an integral part of maintaining power in autocratic systems [@fjelde2014]. Dictators never rule alone: they are always beholden to some kind of coalition or elite to maintain their rule for them. Erdoğan would not be Erdoğan without his cronies in the media and construction sectors, and Orbán would not be Orbán without his grip on news media. Even traditional dictators, such as the Kim dynasty in North Korea, rely upon regime elites to maintain their grip on power, such as the military, police forces, or some other combination of elites. Corruption is a part of keeping these elites loyal to the ruling class. In specific, corruption in autocratic systems serves both as the "policy compromise" as well as "rent sharing" methods of buying loyalty from elites [@gandhi2006]. 
+
+A different yet similar way of looking at maintaining power is through the distributing private goods to the crucial elements of a regime [@demesquita2005]. In this framework, the ruler is incentivised to identify the precise coalition he requires to maintain in order to continue ruling. This coalition, ideally as narrow and limited as possible, is kept on board with the ruler through the issuing of private goods---luxury cars, extravagant dinners, aged whisky^[News outlets have reported that the late North Korean leader, Kim Jong-il, spent as much as \$30 million annually on imported liquor.], decadent mansions^[Russian defence minister Sergei Shoigu has been accused of owning a mansion worth \$18 million by Russian opposition figures.]---while effectively disenfranchising those not in the ruling elite. While there are good criticisms of @demesquita2005, the selectorate theory is useful in that it allows us the bridge the gap between the pursuit of private wealth and maintaining political power. In essence, private wealth in the context of an authoritarian system is translated into political power in a scale usually not observed in democratic societies.
+
+The elite, however, do not only engage in the above. The situation described above would fall under embezzlement and theft, *not* bribery. Bribery is better illustrated with the examples @roseackerman1999 provides: companies seeking special treatment in legislation exchange for campaign contributions, or in the framework of an authoritarian system, giving a certain cut of their profits to the ruling elite in exchange for ease of business. A more critical perspective would argue that this is precisely the form of corruption prevalent in advanced capitalist economies.
+
+This is only one level of corruption, where the ruling elite siphon wealth and resources from the country and use it in their power plays, or where the elite receive kickbacks in exchange for favours to the economic elite. Yet, this is not the only type of corruption which pervades societies. There is a difference between "grand" and "petty" corruption [@amundsen1999; @doig2013], with the former referring to lawmakers being corrupt, while the latter can refer to anything from bureaucrats to the most local of civil servants. Petty corruption (sometimes referred to as street-level corruption) refers to agents such as police officers, customs inspectors, or government employees with power over daily minutiae of state functions [@nieuwbeerta2003]. The corruption involved here usually does not involve the siphoning of state assets to private bank accounts. Instead, it involves requesting informal kickbacks from the non-state actor in exchange for providing a service. This non-state actor can be a citizen applying for a driver's licence, or a small-business owner obtaining a permit to practice her profession. Whereas before the state was in a providing role, in this instance the state is the receiving role^[It should be noted that strictly speaking, this is not the "state" but rather actors acting on behalf of the state. Nevertheless, for the purposes of this paper, this distinction is almost unnecessary.].
 
 Formulating a robust theoretical definition of corruption and what it entails is beyond the scope of this paper. Corruption is subjective: what is considered corrupt and is illegal in one country or society may not necessarily be either in other contexts. For the purposes of this paper, however, I utilise the World Bank's defintion of it, referring to it as "the abuse of public power for private benefit". Such a definition fulfils my purpose here for this paper, which is to unpack the conceptual bundle which is "corruption" and empirically test how it relates to the maintenance of political power.
 
-We often conceptualise corruption as a monolithic phenomenon. Rarely do we distinguish between corruption based on who does it, and the method by which it is done.  I propose that there are different types of corruption. The V-Dem database codes four separate variables on corruption. These are not only differentiated by the level of corruption, but also by the nature of the corruption taking place. The data differentiates between "executive" and "public sector" corruption, the former relating to the "head of state, the head of government, and cabinet ministers" [@vdem_codebook2023, pp. 114-115] while the latter refers to "typical person[s] employed by the public sector, excluding the military" [@vdem_codebook2023, pp. 115-116]. In addition to this, the V-Dem project also draws a line between "embezzlement and theft" and "bribery". Embezzlement and theft in their conceptualisation refers to the misappropriation of public funds for personal use. In contrast, bribery refers to the granting of favours in exchange for material gain.
+We often conceptualise corruption as a monolithic phenomenon. Rarely do we distinguish between corruption based on who does it, and the method by which it is done.  I propose that there are different types of corruption. The V-Dem database codes four separate variables on corruption. These are not only differentiated by the level of corruption, but also by the nature of the corruption taking place. The data differentiates between "executive" and "public sector" corruption, the former relating to the "head of state, the head of government, and cabinet ministers" [@vdem2023codebook, pp. 114-115] while the latter refers to "typical person[s] employed by the public sector, excluding the military" [@vdem2023codebook, pp. 115-116]. In addition to this, the V-Dem project also draws a line between "embezzlement and theft" and "bribery". Embezzlement and theft in their conceptualisation refers to the misappropriation of public funds for personal use. In contrast, bribery refers to the granting of favours in exchange for material gain.
 
-When phrased so, it is not difficult to understand why I wish to study these two concepts separately. They are *different* types of problems, and while they are similar, they can reasonably be thought to lead to different outcomes in governance. This is true not only of the difference between embezzlement and bribery, but also the difference in the status of those committing this corruption. The consequences of cabinet-level officials embezzling funds *or* taking bribes will most certainly be different from that of a patrolling police officer doing the same. In a bit of irony, I propose that decoupling these two concepts from the larger concept of "corruption" allows a more nuanced approach to the study of corruption as a whole.
+When phrased so, it is not difficult to understand why I wish to study these two concepts separately. They are *different* types of problems, and while they are similar, they can reasonably be thought to lead to different outcomes in governance. This is true not only of the difference between embezzlement and bribery, but also the difference in the status of those committing this corruption. The consequences of cabinet-level officials embezzling funds *or* taking bribes will most certainly be different from that of a patrolling police officer doing the same. I propose that decoupling these two concepts from the larger concept of "corruption" allows a more nuanced approach to the study of corruption as a whole.
+
+## Informational Autocracy and Corruption
+
+At this point, I draw on the idea of informational autocracy. In this framework, rulers do not seek to impose a certain worldview upon the ruled, as Stalin, Mao, or Hitler did; they seek only to impose the impression of competence upon the ruled [@guriev2019, p. 101]. 
 
 ## Data
 
@@ -95,9 +103,26 @@ The first and foremost advantage using the V-Dem data brings is that it provides
 
 The utilisation of V-Dem data is not without its weaknesses. A fundamental issue that arises with such a dataset is the inevitable subjectivity of the subject matter. Inherently, this paper assumes that a certain type of political behaviour---that defined by the researchers of the V-Dem project---necessarily constitutes corruption. This is an inherent limitation of this paper. This data type is inextricably tied to how corruption is conceptualised in the advanced, post-industrial societies of the world, and may consider behaviours considered ordinary, ethical, or legal in other context to be corrupt, or vice versa.
 
-Other data are also utilised, though not in the primary analyses. @guriev2019 provide 
+There is some defence to be made in favour of this conceptualisation. While we may debate the subjectivity of corruption, the adverse political and economic outcomes from corrupt practices are mostly evident. Therefore, absent a better conceptualisation of corruption, the way in which the V-Dem Project has conceptualised corruption appears to capture what it seeks to capture. A less abstract and more material problem with this data is that it is not based upon a particular measure or set of measures, but instead the knowledge of coders. While the V-Dem Project is meticulous and rigorous in its coding practices, it is not data with as little as bias as we would like.
 
-```{r Models 1-7}
+Other data are also utilised, though not in the primary analyses. @guriev2019 provide a time-series data of mass killings in a number of countries in their replication materials. I use this data as a robustness check to see whether the existence of mass killings in a given number of years affects the outcome variable. World Bank data is used specifically for another auxiliary analysis, to replace the main dependent variable with another as another form of robustness check. The World Bank data is only available from years 1960 onwards, hence limiting the scope of the analyses run through it; on the upside, the measure used is a direct measure and not the result of expert coding, explaining the robustness it achieves.
+
+The dependent variable I use is the V-Dem "public sector corrupt exchanges" variable. This is a variable coded ordinally by coders and transformed into an integral variable by the V-Dem Project [@vdem2023codebook, pp. 115-116]. Besides the transformation conducted by the V-Dem Project, I also reverse the scale of the variable. Normally, the variable is coded from 0 to 4, with higher values corresponding to *less* corruption. This coding scheme makes it extremely unintuitive to interpret regression results with minimal advantages. In reversing it, I make it so that higher values correspond to higher values of corruption, which is easier to interpret.
+
+The primary independent variable used is the "physical violence index". This is an interval variable, coded from 0 to 1, with higher values representing *more freedom from physical violence* [@vdem2023codebook, p. 297]. In other words, as the value gets closer to 1, the less political violence is expected in the country. While the coding is understandable, I have also reversed this variable's scale in order to make it more easily interpretable.
+
+I utilise other control variables. One such variable is the degree to which the government legitimises its rule on performance grounds. This performance is generally related to good economic outcomes, clean government, and physical security of the governed. This is a crucial control variable, as the theory of informational autocracy proposes that rulers will seek to avoid, generally, utilising heavy-handed means of repression where possible (or, where unnecessary). As covered in the previous section, such regimes can be expected to legitimise their rule through the image of a competent government in the aforementioned areas.
+
+I also add in the "electoral democracy index" for some models. This covers the bare necessities of a democratic system, i.e., free (not necessarily *fair*^[Countries such as Turkey, Hungary, and Poland have free and meaningfully contested elections which are nevertheless significantly biased towards the incumbents through a combination of media control, intimidation, and other means of repressing the opposition.]) elections. This is meant to capture the variation in how authoritarian countries may pay lip service to the ideal of democracy, or go through the motions of democratic rituals.
+
+Another control variable is the gross domestic product (GDP) per capita. This is a general variable used to control for the economic development of the country at that year.
+
+```{r Summary statistics for variables}
+
+```
+
+
+```{r Models 1-6}
 # Here, I reverse several variables as they are coded unintuitively. For instance,
 # `v2excrptps` (public sector bribery) is originally coded 4 for virtually none,
 # and 0 for rampant. This is unintuitive, particularly when interpreting regression
@@ -126,19 +151,14 @@ lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                  data = mydata1,
                  clusters = country_id)
 
-lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc) + v2x_polyarchy + masskilling,
-                 data = df1,
-                 clusters = country_id)
-
-lm7 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf +
+lm6 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + masskilling,
                  data = df1,
                  clusters = country_id)
 ```
-```{r Reporting Models 1-7, include=TRUE}
+```{r Reporting Models 1-6, include=TRUE}
 # Report the new model ----
-modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6, lm7),
+modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
@@ -150,15 +170,16 @@ modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6, lm7),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              notes = list('Standard errors clustered by country.')) %>%
   add_header_above(c(" " = 1,
-                     "Low-level bribery" = 7)) %>% 
+                     "Low-level bribery" = 6)) %>% 
   kable_styling(latex_options = "HOLD_position")
 ```
 
 
-
+\newpage
 ## References
 
 <div id="refs"></div>
 
+\newpage
 ## Appendices
 
