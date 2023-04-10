@@ -7,6 +7,7 @@ library(kableExtra)   # For additional table formatting
 
 # Load data ----
 mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
+  mutate(., region = as_factor(e_regionpol)) %>% # Recode regions as factors
   filter(., v2x_polyarchy <= 0.42) # To filter out the non-democracies.
 
 # Write a function to reverse the scales of some unintuitively coded variables.
@@ -37,19 +38,33 @@ lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                  data = mydata1,
                  clusters = country_id)
 
+lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
+                 data = mydata1,
+                 clusters = country_id)
+
 # Report the models ----
-modelsummary(list(lm1, lm2, lm3, lm4, lm5),
+modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
                           'v2exl_legitperf' = 'Performance legitimation',
                           'log(e_gdppc)' = 'Logged GDP per capita',
                           'v2x_polyarchy' = 'Electoral democracy index',
+                          'relevel(region, ref = 5)1' = 'Region: Eastern Europe and Post-Soviet Union',
+                          'relevel(region, ref = 5)2' = 'Region: Latin America',
+                          'relevel(region, ref = 5)3' = 'Region: North Africa and Middle East',
+                          'relevel(region, ref = 5)4' = 'Region: Sub-Saharan Africa',
+                          'relevel(region, ref = 5)6' = 'Region: Eastern Asia',
+                          'relevel(region, ref = 5)7' = 'Region: Southeastern Asia',
+                          'relevel(region, ref = 5)8' = 'Region: South Asia',
+                          'relevel(region, ref = 5)9' = 'Region: Pacific',
+                          'relevel(region, ref = 5)10' = 'Region: Caribbean',
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              notes = list('Standard errors clustered by country.')) %>%
   add_header_above(c(" " = 1,
-                     "Low-level bribery" = 5))
+                     "Low-level bribery" = 6))
 
 # Add some visualisation ----
 ggplot(data = mydata1,
