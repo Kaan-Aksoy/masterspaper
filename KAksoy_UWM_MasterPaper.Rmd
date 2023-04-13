@@ -40,9 +40,9 @@ library(countrycode)  # To reorganise countries across coding schemes
 ```
 ```{r Data loading and cleaning}
 # Load data ----
-
-# The file "modelling.R" contains the data cleaning process.
-df1 <- read_csv("~/GitHub/masterspaper/kaksoy_masterpaperdata.csv")
+# The file "modelling.R" contains the data cleaning process. Some things are still necessary.
+df1 <- read_csv("~/GitHub/masterspaper/kaksoy_masterpaperdata.csv") %>% 
+  mutate(., region = as_factor(region))
 ```
 ```{r Reversr}
 # Write a function to reverse the scales of some unintuitively coded variables.
@@ -156,26 +156,26 @@ Doing so renders performance legitimation statistically insignificant, while the
 # index) is of a similar nature.
 
 lm1 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy),
-                 data = mydata1,
-                 clusters = country_id)
+                 data = df1,
+                 clusters = country_text_id)
 
 lm2 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf,
-                 data = mydata1,
-                 clusters = country_id)
+                 data = df1,
+                 clusters = country_text_id)
 
 lm3 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
-                 data = mydata1,
-                 clusters = country_id)
+                 data = df1,
+                 clusters = country_text_id)
 
 lm4 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc),
-                 data = mydata1,
-                 clusters = country_id)
+                 data = df1,
+                 clusters = country_text_id)
 
 lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy,
-                 data = mydata1,
-                 clusters = country_id)
+                 data = df1,
+                 clusters = country_text_id)
 ```
 ```{r Reporting Models 1-5, include=TRUE}
 # Report the new model ----
@@ -201,13 +201,13 @@ Then, I add in a regional control, as well as a control for whether a country is
 lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
 lm7 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) +
                    marx, 
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 ```
 ```{r Reporting Models 6-7, include=TRUE}
 modelsummary(list(lm6, lm7),

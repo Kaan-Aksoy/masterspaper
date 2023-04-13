@@ -1,6 +1,3 @@
-# Set working directory
-setwd("~/GitHub/masterspaper")
-
 # Load libraries ----
 library(tidyverse)
 library(haven)
@@ -14,7 +11,7 @@ library(countrycode)  # Converting country coding schemes
 mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
   mutate(., region = as_factor(e_regionpol)) %>% # Recoding regions as factors
   select(., c("country_name", "country_text_id", "year", "v2x_polyarchy", "v2x_clphy",
-              "v2exl_legitperf", "e_gdppc", "region")) %>% 
+              "v2excrptps", "v2exl_legitperf", "e_gdppc", "region")) %>% 
   filter(., v2x_polyarchy <= 0.42) # To filter out the non-democracies.
 
 mydata2 <- read_delim("~/Documents/Data/masskillings.txt") %>% 
@@ -87,6 +84,7 @@ df1 <- list(mydata1, mydata2, mydata3) %>%
   distinct(., country_text_id, year, .keep_all = TRUE) # Eliminate duplicates if there are any
 
 # Save the master data to a file so as to be able to provide a replication dataset.
+setwd("~/GitHub/masterspaper")
 write_csv(df1, "kaksoy_masterpaperdata.csv")
 
 # Write a function to reverse the scales of some unintuitively coded variables.
