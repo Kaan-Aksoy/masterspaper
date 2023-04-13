@@ -20,7 +20,7 @@ bibliography: thesiscitations.bib
 \newpage
 \pagenumbering{arabic}
 ```
-```{r setup, include=FALSE}
+```{r Setup, include=FALSE}
 knitr::opts_chunk$set(
 	echo = FALSE,
 	message = FALSE,
@@ -39,25 +39,10 @@ library(RColorBrewer) # For colour-blind friendly palettes
 library(countrycode)  # To reorganise countries across coding schemes
 ```
 ```{r Data loading and cleaning}
-# Load and clean data ----
-mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
-  filter(., v2x_polyarchy <= 0.42) # To filter out the non-democracies.
+# Load data ----
 
-mydata2 <- read_delim("~/Documents/Data/masskillings.txt") %>% 
-  mutate(., masskilling = as_factor(lag(ongoing, n = 3)),
-         country_name = country,
-         country_text_id = sftgcode) %>% 
-  select(., c("country_text_id", "year", "masskilling")) %>% 
-  na.omit(.)
-
-mydata3 <- read_dta("~/Documents/Data/marx.dta") %>% 
-  drop_na(., cowcode) %>% # Some unrecognised countries (e.g., Abkhazia) cause issues here.
-  mutate(., country_text_id = countrycode(cowcode, origin = 'cown', destination = 'cowc')) %>% 
-  select(., c(country_text_id, year, marx))
-
-# Merge as necessary ----
-df1 <- list(mydata1, mydata2, mydata3) %>% 
-  reduce(left_join, by = c("country_text_id", "year"))
+# The file "modelling.R" contains the data cleaning process.
+df1 <- read_csv("~/GitHub/masterspaper/kaksoy_masterpaperdata.csv")
 ```
 ```{r Reversr}
 # Write a function to reverse the scales of some unintuitively coded variables.
@@ -111,7 +96,13 @@ Modern autocrats are all-too aware of this problem. If they could win popular el
 
 This is not, of course, universally true. Were it so, we would not see any "traditional" dictatorships, yet the Gulf monarchies---Saudi Arabia, Qatar, Bahrain---still exist as bastions of traditional dictatorships despite some milquetoast efforts to improve their images in the eyes of a modern liberal audience. Therefore, there must be a deciding factor which pushes autocrats to pursue such tactics instead of more heavy-handed methods.
 
-As alluded to before, I argue that this factor is the cost of repression. As the cost of repression rises---material or less tangible---the autocracy will rely more on smarter repression methods. Chief among these methods is pre-empting protest and dissent in the first place, i.e., diffusing discontent before it even materialises. One prime way governments go about accomplishing this is through the creation of an illusion of competence. I propose that reducing or eliminating low-level bribery---or fostering an image of such---is a very good way of creating the impression of a clean, well-functioning government.
+As alluded to before, I argue that this factor is the cost of repression. 
+
+As the cost of repression rises---material or less tangible---the autocracy will rely more on smarter repression methods.
+
+Chief among these methods is pre-empting protest and dissent in the first place, i.e., diffusing discontent before it even materialises.
+
+One prime way governments go about accomplishing this is through the creation of an illusion of competence. I propose that reducing or eliminating low-level bribery---or fostering an image of such---is a very good way of creating the impression of a clean, well-functioning government.
 
 Consider an authoritarian state where ordinary citizens are exposed to situations in which they pay bribes regularly. These could take place in the form of frivolous speeding tickets, the renewing of passports, the issuance of business licences, or registration in state schools, to provide a few examples. In each of these instances, a citizen may be---informally---required to pay a bribe in order to obtain a service, without which the service would not be rendered (at least, in a reasonable time). By cracking down on such small-time bribery, a government could visibly improve a citizen's life. In effect, it would be removing a tax on very ordinary daily activities.
 
@@ -121,7 +112,9 @@ In other words, pursuing the interests of rival elites is risky, even in the con
 
 Therefore, lower levels of low-level (or street-level) bribery is a visible means of demonstrating competence, as well as affirming commitment to a clean government to the public. In addition, ensuring lower levels of low-level bribery has less political risks than ensuring less high-level corruption (both bribery and embezzlement).
 
-This makes tackling low-level bribery a good avenue of being an "informational autocrat". I propose that as the cost of repression rises, autocratic regimes will resort to cracking down on low-level bribery as a means of creating the image of competence amongst the public they govern. Due to practical difficulties in measuring the cost of repression across various countries, I will operationalise this dependent variable as the political violence which takes place. My reasoning for this is that if political violence were possible and relatively easy to conduct, it would occur. Therefore, political violence which does not occur in the context of an authoritarian regime is taken as a sign that there are higher costs associated with it.
+This makes tackling low-level bribery a good avenue of being an "informational autocrat". I propose that as the cost of repression rises, autocratic regimes will resort to cracking down on low-level bribery as a means of creating the image of competence amongst the public they govern. Due to practical difficulties in measuring the cost of repression across various countries, I will operationalise this dependent variable as the political violence which takes place. My reasoning for this is that if political violence were possible and relatively easy to conduct, it would occur. Therefore, political violence which does not occur in the context of an authoritarian regime is taken as a sign that there are higher costs associated with it. Therefore, the first hypothesis of this paper is as follows:
+
+$$H_1$$: Higher costs of repression will cause lower values of low-level bribery.
 
 ## Data
 
@@ -153,7 +146,7 @@ A crucial part of informational autocrats, however, is the effort to convince ci
 
 The result from Model 3 shows to us that higher amounts of physical violence *and* higher degrees of performance legitimation lead to higher values on the low-level bribery index. This is puzzling, and does not comport with the theory laid out in the previous sections. On the other hand, Model 4 and 5 include the logged GDP per capita of a country in order to capture the level of development, and the electoral democracy index in order to control for the varying levels of democratic processes within autocracies themselves.
 
-Doing so renders performance legitimation statistically insignificant, while the effect of physical violence remains directionally the same and statistically significant at the same time. The degree to which an autocracy is "democratic" also has a statistically significant positive effect on low-level bribery, which is also an interesting result.
+Doing so renders performance legitimation statistically insignificant, while the effect of physical violence remains directionally the same and statistically significant at the same time. The degree to which an autocracy is "democratic" also has a statistically significant positive effect on low-level bribery. This is a puzzling outcome, and will be discussed further in the following section of this paper.
 
 ```{r First models (Models 1-5), fig.height=3}
 # Here, I reverse several variables as they are coded unintuitively. For instance,
@@ -201,6 +194,49 @@ modelsummary(list(lm1, lm2, lm3, lm4, lm5),
                      "Low-level bribery" = 5)) %>% 
   kable_styling(latex_options = "HOLD_position")
 ```
+
+Then, I add in a regional control, as well as a control for whether a country is communist or not. The definitions of the regions are provided in 
+
+```{r Models 6-7}
+lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
+                 data = df1,
+                 clusters = country_id)
+
+lm7 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) +
+                   marx, 
+                 data = df1,
+                 clusters = country_id)
+```
+```{r Reporting Models 6-7, include=TRUE}
+modelsummary(list(lm6, lm7),
+             output = 'kableExtra',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
+                          'v2exl_legitperf' = 'Performance legitimation',
+                          'log(e_gdppc)' = 'Logged GDP per capita',
+                          'v2x_polyarchy' = 'Electoral democracy index',
+                          'relevel(region, ref = 5)1' = 'Region: Eastern Europe and post-Soviet',
+                          'relevel(region, ref = 5)2' = 'Region: Latin America',
+                          'relevel(region, ref = 5)3' = 'Region: North Africa and Middle East',
+                          'relevel(region, ref = 5)4' = 'Region: Sub-Saharan Africa',
+                          'relevel(region, ref = 5)6' = 'Region: Eastern Asia',
+                          'relevel(region, ref = 5)7' = 'Region: Southeastern Asia',
+                          'relevel(region, ref = 5)8' = 'Region: Southern Asia',
+                          'relevel(region, ref = 5)9' = 'Region: The Pacific',
+                          'relevel(region, ref = 5)10' = 'Region: The Caribbean',
+                          'marx' = 'Communist',
+                          '(Intercept)' = 'Intercept'),
+             gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
+             notes = list('Standard errors clustered by country.'),
+             title = "Models 6-7") %>%
+  add_header_above(c(" " = 1,
+                     "Low-level bribery" = 2)) %>% 
+  kable_styling(latex_options = "HOLD_position")
+```
+
+
 
 ## Results and Discussion
 
