@@ -4,11 +4,28 @@ library(haven)
 library(estimatr)     # To cluster standard errors
 library(modelsummary) # For neat reporting tables
 library(kableExtra)   # For additional table formatting
+library(countrycode)  # Converting country coding schemes
 
 # Load data ----
 mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
-  mutate(., region = as_factor(e_regionpol)) %>% # Recode regions as factors
-  filter(., v2x_polyarchy <= 0.42) # To filter out the non-democracies.
+  mutate(., region = as_factor(e_regionpol)) %>% # Recoding regions as factors
+  filter(., v2x_polyarchy <= 0.42) # Filtering non-democratic countries
+
+mydata2 <- read_delim("~/Documents/Data/masskillings.txt") %>% 
+  mutate(., masskilling = as_factor(lag(ongoing, n = 3)),
+         country_name = country,
+         country_text_id = sftgcode) %>% 
+  select(., c("country_text_id", "year", "masskilling")) %>% 
+  na.omit(.)
+
+mydata3 <- read_dta("~/Documents/Data/marx.dta") %>% 
+  drop_na(., cowcode) %>% 
+  mutate(., country_text_id = countrycode(cowcode, origin = 'cown', destination = 'cowc')) %>% 
+  select(., c(country_text_id, year, marx))
+
+df1 <- list(mydata1, mydata2, mydata3) %>% 
+  reduce(left_join, by = c("country_text_id", "year")) %>% 
+  distinct(., country_text_id, year, .keep_all = TRUE) # Eliminate duplicates if there are any
 
 # Write a function to reverse the scales of some unintuitively coded variables.
 reversr <- function (x, na.rm = T) {
@@ -17,34 +34,40 @@ reversr <- function (x, na.rm = T) {
 
 # Create models ----
 lm1 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy),
-                 data = mydata1,
+                 data = df1,
                  clusters = country_id)
 
 lm2 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf,
-                 data = mydata1,
+                 data = df1,
                  clusters = country_id)
 
 lm3 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
-                 data = mydata1,
+                 data = df1,
                  clusters = country_id)
 
 lm4 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc),
-                 data = mydata1,
+                 data = df1,
                  clusters = country_id)
 
 lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy,
-                 data = mydata1,
+                 data = df1,
                  clusters = country_id)
 
 lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
-                 data = mydata1,
+                 data = df1,
+                 clusters = country_id)
+
+lm7 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) +
+                   marx, 
+                 data = df1,
                  clusters = country_id)
 
 # Report the models ----
-modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6),
+modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6, lm7),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
@@ -60,14 +83,16 @@ modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6),
                           'relevel(region, ref = 5)8' = 'Region: South Asia',
                           'relevel(region, ref = 5)9' = 'Region: Pacific',
                           'relevel(region, ref = 5)10' = 'Region: Caribbean',
+                          'marx' = 'Communist',
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
-             notes = list('Standard errors clustered by country.')) %>%
+             notes = list('Standard errors clustered by country.')
+             ) %>%
   add_header_above(c(" " = 1,
-                     "Low-level bribery" = 6))
+                     "Low-level bribery" = 7))
 
 # Add some visualisation ----
-ggplot(data = mydata1,
+ggplot(data = df1,
        mapping = aes(x = reversr(v2x_clphy),
                      y = reversr(v2excrptps))) +
   geom_point(alpha = .05) +
@@ -78,22 +103,22 @@ ggplot(data = mydata1,
   theme_linedraw()
 
 # Try something new ----
-mydata2 <- read_delim("~/Documents/Data/masskillings.txt") %>% 
+masskilling <- read_delim("~/Documents/Data/masskillings.txt") %>% 
   mutate(., masskilling = as_factor(lag(ongoing, n = 3)),
          country_name = country,
          country_text_id = sftgcode) %>% 
   select(., c("country_text_id", "year", "masskilling")) %>% 
   na.omit(.)
 
-df1 <- list(mydata1, mydata2) %>% 
+df1 <- list(df1, masskilling) %>% 
   reduce(left_join, by = c("country_text_id", "year"))
 
-lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+lm8 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + masskilling,
                  data = df1,
                  clusters = country_id)
 
-lm7 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf +
+lm9 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + masskilling,
                  data = df1,
                  clusters = country_id)
@@ -137,7 +162,7 @@ df1 %>%
 # measure.
 
 # Load the DPI data ----
-mydata3 <- read_dta("~/Documents/Data/DPI2015/DPI2015.dta") %>% 
+dpi <- read_dta("~/Documents/Data/DPI2015/DPI2015.dta") %>% 
   naniar::replace_with_na(replace = list(liec = c(-999),
                                          eiec = c(-999))) %>% 
   filter(., liec <= 5 &
@@ -145,7 +170,7 @@ mydata3 <- read_dta("~/Documents/Data/DPI2015/DPI2015.dta") %>%
   mutate(., country_text_id = ifs) %>% 
   select(., c("country_text_id", "year", "liec", "eiec"))
 
-df2 <- list(mydata3, df1) %>% 
+df2 <- list(dpi, df1) %>% 
   reduce(left_join, by = c("country_text_id", "year"))
 
 # Now try it with the DPI data.
@@ -200,7 +225,7 @@ modelsummary(list(lm7, lm8, lm9, lm10, lm11, lm12, lm13),
                    "Low-level bribery" = 7))
 
 # Try using another proxy for corruption, such as the time it takes to open a business in days.
-mydata4 <- read_csv("~/Documents/Data/businessopen.csv", skip = 3) %>% 
+businesstime <- read_csv("~/Documents/Data/businessopen.csv", skip = 3) %>% 
   mutate(., country_text_id = `Country Code`,
          country_name = `Country Name`) %>% 
   select(., -c("Indicator Name", "Indicator Code", "Country Name", "Country Code")) %>% 
@@ -211,7 +236,7 @@ mydata4 <- read_csv("~/Documents/Data/businessopen.csv", skip = 3) %>%
   filter(., country_text_id %in% df1$country_text_id) %>% 
   na.omit()
 
-df3 <- list(mydata4, df1) %>% 
+df3 <- list(businesstime, df1) %>% 
   reduce(left_join, by = c("country_text_id", "year"))
 
 # More models with this new dependent variable.
