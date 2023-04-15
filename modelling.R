@@ -11,7 +11,7 @@ library(countrycode)  # Converting country coding schemes
 mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
   mutate(., region = as_factor(e_regionpol)) %>% # Recoding regions as factors
   select(., c("country_name", "country_text_id", "year", "v2x_polyarchy", "v2x_clphy",
-              "v2excrptps", "v2exl_legitperf", "e_gdppc", "region")) %>% 
+              "v2excrptps", "v2exl_legitperf", "e_gdppc", "e_total_resources_income_pc", "region")) %>% 
   filter(., v2x_polyarchy <= 0.42) # To filter out the non-democracies.
 
 mydata2 <- read_delim("~/Documents/Data/masskillings.txt") %>% 
@@ -21,13 +21,13 @@ mydata2 <- read_delim("~/Documents/Data/masskillings.txt") %>%
   select(., c("country_text_id", "year", "masskilling")) %>% 
   na.omit(.)
 
-# So, it's problematic to try and expand the years. Recreating the dataset is actually easier.
-# mydata3 <- read_dta("~/Documents/Data/marx.dta") %>% 
+# So, it's problematic to try and expand the years. Recreating the dataset is actually easier, done below.
+# mydata3 <- read_dta("~/Documents/Data/marx.dta") %>%
 #   drop_na(., cowcode) %>% # Some unrecognised countries (e.g., Abkhazia) cause issues here.
-#   mutate(., country_text_id = countrycode(cowcode, origin = 'cown', destination = 'cowc')) %>% 
+#   mutate(., country_text_id = countrycode(cowcode, origin = 'cown', destination = 'cowc')) %>%
 #   select(., c("country_text_id", "year", "marx"))
 
-# So this is the solution I hacked together. Not really proud of it, but it gets the job done.
+# This is the solution I hacked together. Not really proud of it, but it gets the job done.
 mydata3 <- expand_grid(year = c(1789:2022),
                        country_text_id = unique(mydata1$country_text_id)) %>% 
   mutate(., marx = case_when(
@@ -78,8 +78,30 @@ mydata3 <- expand_grid(year = c(1789:2022),
   ) %>% 
   arrange(., country_text_id)
 
+mydata4 <- read_csv("~/Documents/Data/businessopen.csv", skip = 3) %>% 
+  mutate(., country_text_id = `Country Code`,
+         country_name = `Country Name`) %>% 
+  select(., -c("Indicator Name", "Indicator Code", "Country Name", "Country Code", "country_name")) %>% 
+  pivot_longer(cols = 1:63,
+               names_to = "year",
+               values_to = "businessdays") %>% 
+  mutate(., year = as.numeric(year)) %>% 
+  filter(., country_text_id %in% mydata1$country_text_id) %>% 
+  na.omit()
+
+mydata5 <- read_csv("~/Documents/Data/aidpercgni.csv", skip = 3) %>% 
+  mutate(., country_text_id = `Country Code`,
+         country_name = `Country Name`) %>% 
+  select(., -c("Indicator Name", "Indicator Code", "Country Name", "Country Code", "country_name")) %>% 
+  pivot_longer(cols = 1:63,
+               names_to = "year",
+               values_to = "aidgni") %>% 
+  mutate(., year = as.numeric(year)) %>% 
+  filter(., country_text_id %in% mydata1$country_text_id) %>% 
+  na.omit()
+
 # Merge as necessary ----
-df1 <- list(mydata1, mydata2, mydata3) %>% 
+df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5) %>% 
   reduce(left_join, by = c("country_text_id", "year")) %>% 
   distinct(., country_text_id, year, .keep_all = TRUE) # Eliminate duplicates if there are any
 
@@ -92,64 +114,82 @@ reversr <- function (x, na.rm = T) {
   min(x, na.rm = T) - x + max(x, na.rm = T)
 }
 
-# Create models ----
+# Create models 1 to 5 ----
 lm1 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy),
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
 lm2 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf,
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
 lm3 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
 lm4 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc),
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
 lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy,
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
+lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy + log(e_total_resources_income_pc+1),
+                 data = df1,
+                 clusters = country_text_id)
+
+# Report models 1 to 5 ----
+modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6),
+             output = 'kableExtra',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
+             notes = list('Standard errors clustered by country.'),
+             title = "Models 1-6") %>%
+  add_header_above(c(" " = 1,
+                     "Low-level bribery" = 6)) %>% 
+  kable_styling(latex_options = "HOLD_position") # This one is only necessary to keep table position fixed.
+
+# Create models 6 and 7 ----
 lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
 lm7 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) +
                    marx, 
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
-# Report the models ----
-modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6, lm7),
+# Report models 6 and 7 ----
+modelsummary(list(lm6, lm7),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
                           'v2exl_legitperf' = 'Performance legitimation',
                           'log(e_gdppc)' = 'Logged GDP per capita',
                           'v2x_polyarchy' = 'Electoral democracy index',
-                          'relevel(region, ref = 5)1' = 'Region: Eastern Europe and Post-Soviet Union',
+                          'relevel(region, ref = 5)1' = 'Region: Eastern Europe and post-Soviet',
                           'relevel(region, ref = 5)2' = 'Region: Latin America',
                           'relevel(region, ref = 5)3' = 'Region: North Africa and Middle East',
                           'relevel(region, ref = 5)4' = 'Region: Sub-Saharan Africa',
                           'relevel(region, ref = 5)6' = 'Region: Eastern Asia',
                           'relevel(region, ref = 5)7' = 'Region: Southeastern Asia',
-                          'relevel(region, ref = 5)8' = 'Region: South Asia',
-                          'relevel(region, ref = 5)9' = 'Region: Pacific',
-                          'relevel(region, ref = 5)10' = 'Region: Caribbean',
+                          'relevel(region, ref = 5)8' = 'Region: Southern Asia',
+                          'relevel(region, ref = 5)9' = 'Region: The Pacific',
+                          'relevel(region, ref = 5)10' = 'Region: The Caribbean',
                           'marx' = 'Communist',
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
-             notes = list('Standard errors clustered by country.')
-             ) %>%
+             notes = list('Standard errors clustered by country.'),
+             title = "Models 6-7") %>%
   add_header_above(c(" " = 1,
-                     "Low-level bribery" = 7))
+                     "Low-level bribery" = 2)) %>% 
+  kable_styling(latex_options = "HOLD_position")
 
 # Add some visualisation ----
 ggplot(data = df1,
