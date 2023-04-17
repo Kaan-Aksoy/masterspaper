@@ -5,14 +5,15 @@ library(estimatr)     # To cluster standard errors
 library(modelsummary) # For neat reporting tables
 library(kableExtra)   # For additional table formatting
 library(countrycode)  # Converting country coding schemes
+library(sandwich)
+library(lmtest)
 
-# Load data ----
 # Load and clean data ----
 mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
   mutate(., region = as_factor(e_regionpol)) %>% # Recoding regions as factors
   select(., c("country_name", "country_text_id", "year", "v2x_polyarchy", "v2x_clphy",
               "v2excrptps", "v2exl_legitperf", "e_gdppc", "e_total_resources_income_pc", "region")) %>% 
-  filter(., v2x_polyarchy <= 0.42) # To filter out the non-democracies.
+  mutate(., democracy = as_factor(if_else(v2x_polyarchy <= 0.42, 0, 1)))
 
 mydata2 <- read_delim("~/Documents/Data/masskillings.txt") %>% 
   mutate(., masskilling = as_factor(lag(ongoing, n = 3)),
@@ -100,8 +101,20 @@ mydata5 <- read_csv("~/Documents/Data/aidpercgni.csv", skip = 3) %>%
   filter(., country_text_id %in% mydata1$country_text_id) %>% 
   na.omit()
 
+mydata6 <- read_csv("~/Documents/Data/natresrents.csv", skip = 4) %>% 
+  mutate(., country_text_id = `Country Code`,
+         country_name = `Country Name`) %>% 
+  select(., -c("Indicator Name", "Indicator Code", "Country Name", "Country Code", "country_name")) %>% 
+  pivot_longer(cols = 1:63,
+               names_to = "year",
+               values_to = "naturalresourcerents") %>% 
+  mutate(., year = as.numeric(year), # Imports as character
+         naturalresourcerents = naturalresourcerents/100) %>% # These are coded as percentages, decimalising
+  filter(., country_text_id %in% mydata1$country_text_id) %>% 
+  na.omit()
+
 # Merge as necessary ----
-df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5) %>% 
+df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6) %>% 
   reduce(left_join, by = c("country_text_id", "year")) %>% 
   distinct(., country_text_id, year, .keep_all = TRUE) # Eliminate duplicates if there are any
 
@@ -118,40 +131,39 @@ reversr <- function (x, na.rm = T) {
 lm1 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy),
                  data = df1,
                  clusters = country_text_id)
-
-lm2 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf,
+lm2 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
                  data = df1,
                  clusters = country_text_id)
 
-lm3 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
-                 data = df1,
-                 clusters = country_text_id)
-
-lm4 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+lm3 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc),
                  data = df1,
                  clusters = country_text_id)
 
-lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+lm4 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy,
                  data = df1,
                  clusters = country_text_id)
-
-lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc) + v2x_polyarchy + log(e_total_resources_income_pc+1),
+lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy + aidgni,
                  data = df1,
                  clusters = country_text_id)
 
 # Report models 1 to 5 ----
-modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6),
+modelsummary(list(lm1, lm2, lm3, lm4, lm5),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
+             coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
+                          'v2exl_legitperf' = 'Performance legitimation',
+                          'log(e_gdppc)' = 'Logged GDP per capita',
+                          'v2x_polyarchy' = 'Electoral democracy index',
+                          'aidgni' = 'Aid as % of GNI',
+                          '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              notes = list('Standard errors clustered by country.'),
-             title = "Models 1-6") %>%
-  add_header_above(c(" " = 1,
-                     "Low-level bribery" = 6)) %>% 
-  kable_styling(latex_options = "HOLD_position") # This one is only necessary to keep table position fixed.
+             title = "Models 1-5") %>%
+  add_header_above(c(" " = 1, "Low-level bribery" = 5)) %>% 
+  kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") # Only for knitting
 
 # Create models 6 and 7 ----
 lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
@@ -189,189 +201,54 @@ modelsummary(list(lm6, lm7),
              title = "Models 6-7") %>%
   add_header_above(c(" " = 1,
                      "Low-level bribery" = 2)) %>% 
-  kable_styling(latex_options = "HOLD_position")
+  kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") %>%
+  pack_rows("Region", start_row = 11, end_row = 27, bold = FALSE)
 
-# Add some visualisation ----
-ggplot(data = df1,
-       mapping = aes(x = reversr(v2x_clphy),
-                     y = reversr(v2excrptps))) +
-  geom_point(alpha = .05) +
-  geom_smooth(method = 'lm') +
-  labs(title = "Relationship between physical violence and low-level corruption",
-       x = "Physical violence index",
-       y = "Low-level corruption") +
-  theme_linedraw()
-
-# Try something new ----
-masskilling <- read_delim("~/Documents/Data/masskillings.txt") %>% 
-  mutate(., masskilling = as_factor(lag(ongoing, n = 3)),
-         country_name = country,
-         country_text_id = sftgcode) %>% 
-  select(., c("country_text_id", "year", "masskilling")) %>% 
-  na.omit(.)
-
-df1 <- list(df1, masskilling) %>% 
-  reduce(left_join, by = c("country_text_id", "year"))
-
-lm8 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc) + v2x_polyarchy + masskilling,
+# Change dependent variable to time it takes to open a business ----
+lm8 <- lm_robust(businessdays ~ reversr(v2x_clphy),
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
-lm9 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf +
-                   log(e_gdppc) + v2x_polyarchy + masskilling,
+lm9 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf,
                  data = df1,
-                 clusters = country_id)
+                 clusters = country_text_id)
 
-# Report the new model ----
-modelsummary(list(lm1, lm2, lm3, lm4, lm5, lm6, lm7),
+lm10 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
+                    log(e_gdppc),
+                  data = df1,
+                  clusters = country_text_id)
+
+lm11 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
+                    log(e_gdppc) + v2x_polyarchy,
+                  data = df1,
+                  clusters = country_text_id)
+
+# Report the new models ----
+modelsummary(list(lm8, lm9, lm10, lm11),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
                           'v2exl_legitperf' = 'Performance legitimation',
                           'log(e_gdppc)' = 'Logged GDP per capita',
                           'v2x_polyarchy' = 'Electoral democracy index',
-                          'masskilling1' = 'Mass killing (3 years)',
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
-             notes = list('Standard errors clustered by country.')) %>%
-  add_header_above(c(" " = 1,
-                     "Low-level bribery" = 7))
-
-# So, the standard errors skyrocket when we include the masskillings, presumably
-# because we decrease the number of observations. Perhaps trying a boxplot might
-# give us a picture of some kind.
-
-df1 %>% 
-  select(., c("v2excrptps", "masskilling")) %>% 
-  na.omit(.) %>% 
-  ggplot(.,
-         aes(x = masskilling,
-             y = reversr(v2excrptps))) +
-  geom_boxplot() +
-  scale_x_discrete(breaks = c("1", "0"),
-                   labels = c("Yes", "No")) +
-  labs(title = "Difference between mass killing countries and non-mass killing autocracies",
-       x = "Mass killing within last three years?",
-       y = "Low-level corruption") +
-  theme_linedraw()
+             notes = list('Standard errors clustered by country.'),
+             title = "Models 7-10") %>%
+  add_header_above(c(" " = 1, "Time to open business (days)" = 4)) %>% 
+  kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
 
 # The boxplot clearly shows to us that there really isn't a difference between
 # states which have had mass killings in the last three years and those which
 # have not, at least in how Treisman and Guriev (2019) have implemented the
 # measure.
 
-# Load the DPI data ----
-dpi <- read_dta("~/Documents/Data/DPI2015/DPI2015.dta") %>% 
-  naniar::replace_with_na(replace = list(liec = c(-999),
-                                         eiec = c(-999))) %>% 
-  filter(., liec <= 5 &
-           ifs != 0) %>%  # Non-democracies. Can also be tried with "7" for dominant parties.
-  mutate(., country_text_id = ifs) %>% 
-  select(., c("country_text_id", "year", "liec", "eiec"))
+# # Load the DPI data ----
+# dpi <- read_dta("~/Documents/Data/DPI2015/DPI2015.dta") %>% 
+#   naniar::replace_with_na(replace = list(liec = c(-999),
+#                                          eiec = c(-999))) %>% 
+#   filter(., liec <= 5 &
+#            ifs != 0) %>%  # Non-democracies. Can also be tried with "7" for dominant parties.
+#   mutate(., country_text_id = ifs) %>% 
+#   select(., c("country_text_id", "year", "liec", "eiec"))
 
-df2 <- list(dpi, df1) %>% 
-  reduce(left_join, by = c("country_text_id", "year"))
-
-# Now try it with the DPI data.
-
-lm8 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy),
-                 data = df2,
-                 clusters = country_id)
-
-lm9 <- lm_robust(reversr(v2excrptps) ~ v2exl_legitperf,
-                 data = df2,
-                 clusters = country_id)
-
-lm10 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
-                 data = df2,
-                 clusters = country_id)
-
-lm11 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc),
-                 data = df2,
-                 clusters = country_id)
-
-lm12 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc) + liec,
-                 data = df2,
-                 clusters = country_id)
-
-lm13 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-                    log(e_gdppc) + liec + eiec,
-                  data = df2,
-                  clusters = country_id)
-
-lm14 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-                    log(e_gdppc) + liec + eiec + masskilling,
-                  data = df2,
-                  clusters = country_id)
-
-# Report them.
-
-modelsummary(list(lm7, lm8, lm9, lm10, lm11, lm12, lm13),
-             output = 'kableExtra',
-             stars = c('*' = .1, '**' = .05, '***' = .01),
-             coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
-                          'v2exl_legitperf' = 'Performance legitimation',
-                          'log(e_gdppc)' = 'Logged GDP per capita',
-                          'liec' = 'Legislative electoral competitiveness',
-                          'eiec' = 'Executive electoral competitiveness',
-                          'masskilling1' = 'Mass killing',
-                          '(Intercept)' = 'Intercept'),
-             gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
-             notes = list('Standard errors clustered by country.')) %>% 
-  add_header_above(c(" " = 1,
-                   "Low-level bribery" = 7))
-
-# Try using another proxy for corruption, such as the time it takes to open a business in days.
-businesstime <- read_csv("~/Documents/Data/businessopen.csv", skip = 3) %>% 
-  mutate(., country_text_id = `Country Code`,
-         country_name = `Country Name`) %>% 
-  select(., -c("Indicator Name", "Indicator Code", "Country Name", "Country Code")) %>% 
-  pivot_longer(cols = 1:63,
-               names_to = "year",
-               values_to = "businessdays") %>% 
-  mutate(., year = as.numeric(year)) %>% 
-  filter(., country_text_id %in% df1$country_text_id) %>% 
-  na.omit()
-
-df3 <- list(businesstime, df1) %>% 
-  reduce(left_join, by = c("country_text_id", "year"))
-
-# More models with this new dependent variable.
-
-lm15 <- lm_robust(businessdays ~ reversr(v2x_clphy),
-                 data = df3,
-                 clusters = country_id)
-
-lm16 <- lm_robust(businessdays ~ v2exl_legitperf,
-                 data = df3,
-                 clusters = country_id)
-
-lm17 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf,
-                 data = df3,
-                 clusters = country_id)
-
-lm18 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc),
-                 data = df3,
-                 clusters = country_id)
-
-lm19 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc) + v2x_polyarchy,
-                 data = df3,
-                 clusters = country_id)
-
-modelsummary(list(lm15, lm16, lm17, lm18, lm19),
-             output = 'kableExtra',
-             stars = c('*' = .1, '**' = .05, '***' = .01),
-             coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
-                          'v2exl_legitperf' = 'Performance legitimation',
-                          'log(e_gdppc)' = 'Logged GDP per capita',
-                          'v2x_polyarchy' = 'Electoral democracy index',
-                          '(Intercept)' = 'Intercept'),
-             gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
-             notes = list('Standard errors clustered by country.')) %>% 
-  add_header_above(c(" " = 1,
-                     "Time taken to open business (days)" = 5))
