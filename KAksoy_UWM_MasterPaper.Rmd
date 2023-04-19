@@ -1,5 +1,5 @@
 ---
-title: "Unpacking Corruption: The Relationship between Street-Level Bribery and Maintaining Political Power"
+title: "Quashing street-level corruption: Autocrats and competence"
 author: "Kaan Aksoy"
 date: "4th May 2023"
 mainfont: Times New Roman
@@ -12,10 +12,12 @@ output:
     latex_engine: xelatex
     extra_dependencies: float
     fig_caption: yes
+    df_print: kable
 indent: true
 citation_package: biblatex
 bibliography: thesiscitations.bib
 ---
+
 ```{=tex}
 \pagenumbering{gobble}
 \newpage
@@ -51,73 +53,90 @@ reversr <- function (x, na.rm = T) {
   min(x, na.rm = T) - x + max(x, na.rm = T)
 }
 ```
+
 ## Introduction
 
-Corruption is prevalent in the world, particularly among authoritarian states. Intuitively, we expect that authoritarian regimes be more corrupt than their democratic counterparts, due to the relative absence of institutional restraints. For most part, this holds true. Recent literature, however, suggests that not all authoritarian regimes are the same. Increasingly, authoritarian regimes are shifting away from heavy-handed methods of maintaining control. Instead of brute force, they are transitioning towards more restrained methods of perpetuating themselves.
+Particularly after the end of the Cold War, completely closed regimes have gotten fewer and fewer. As the third wave of democratisation slowed down, and some regimes sunk back into authoritarianism, a new form of authoritarian regime became dominant. Straddling the line between hybrid regimes and autocratic regimes, these new regimes such as those of Hungary, Turkey, and Poland have been given a variety of names, but chief among them has been "competitive authoritarian". Others, like Russia, are not quite competitive, but have also embraced the common unifying property of these new authoritarian regimes.
 
-In this framework of conceptualising autocratic governments, corruption plays a role in maintaining a regime by providing means of distributing rewards for essential and influential members of the ruling elite. With this perspective, corruption becomes not an undesirable aspect of government, but instead a built-in feature of how a country is governed.
+Instead of indiscriminate and highly visible methods of repression, these new autocracies often resort to more targeted, precise, and subtle means of maintaining their hold on society. Their tools are no longer secret services, truncheon-wielding police forces, and martial law. They are no longer built upon a foundation of a strong ideology which promises a better, ideal future. Increasingly, resilient authoritarian states allow a semblance of democracy, with expanding roles for elected legislatures and even competing presidential candidates. In sum, autocracies increasingly adopt democratic institutions and severely adjust the playing field through means which are sometimes legal, sometimes not.
 
-I aim to bridge the understanding of this transition to a newer type of autocracy and corruption by drawing on the "informational autocracy" theory proposed by @guriev2019. @guriev2019 demonstrate how newer autocrats seek not to violently hold power, but instead convince their citizenry alongside more targeted and surgical methods of repression. Competence or the illusion of competence is a key component of convincing the citizenry of their right to rule.
+These methods, such as media manipulation, obfuscation, confusion, and mass propaganda have largely taken over as the main tools of these regimes. Old methods of repression remain within their repertoires, though are not used unless the regime is left with no other choice. As the cost of repressing the burgeoning middle classes rise, these old methods have grown to be more cumbersome than they had previously been. Now, these new authoritarian regimes which cannot buy loyalty and co-opt the necessary elites resort to control information about them, and seek to cultivate images of being competent, effective, and capable.
 
-My theory proposes that as the costs of repression in a system increase, the level of low-level bribery will decrease. The reasoning follows that if repression were without cost (or carries a tolerable cost), the dictator has no incentive to not repress. Therefore, repression cost being high is a necessary condition for the incentive mechanisms to kick in. When these costs are high, there is an increasing pressure to utilise what @guriev2019 refer to as "low-violence methods" (106).
+Drawing on the theory of informational autocracy [@guriev2019], I engage in a study of how autocrats go about maintaining this image, fabricated or not. I take low-level bribery (alternatively "street-level" or "petty" bribery) as the main object of interest, and theorise that it is a primary factor in how an ordinary citizen perceives the government under which she lives under. I assume that a citizen who does not have to pay bribes to a police officer who pulls him over, or to a regulatory body in order to practice a mundane trade such as hairdressing will see his government as more efficient and capable than one who does.
 
-In exploring the relationship between autocratic governance and corruption, I contribute to the literature on corruption by disaggregating the concept of corruption. Corruption is commonly conceptualised and operationalised as a monolithic whole. There is little differentiation between corruption taking place in different echelons of government or society. Furthermore, there is often little differentiation between embezzlement and bribery, which are two distinct forms of corruption. I aim to fill this gap in the literature by seeking to understand how autocratic governance influences the latter.
+With this assumption, I argue that even if high-level embezzlement, theft, and bribery---corruption---may be an integral part of maintaining the regime's links with media bosses and other cronies, low-level bribery is still something the regime will seek to keep low. However, this theory is contingent on the regime being unable or unwilling to repress citizens through conventional means. I connect this condition to the cost of repression in terms of political or material costs. With this theory, I propose that higher costs of repression will lead to lower rates of low-level bribery, due to a need to reinforce the image of effective government.
 
-I also build upon @chang2010, by unpacking the concept of corruption and focusing on a particular aspect of it, while also substantially increasing the sample size used. The data I use includes 200 countries over a period of 234 years. After data cleaning and processing which removes about half the data, I work with approximately 20,000 data points.
+As measuring the cost of repression directly is difficult from a conceptual as well as a practical standpoint, I instead use the degree to which a regime exhibits political violence. In practice, this refers to how common politically-motivated killings and torture by the government are. In justifying this choice of measure, I argue that if political violence were a viable method of maintaining control, it would be used, as it is in other autocracies around the world. Therefore, the lack of such violence should be indicative that the costs of such violence are indeed high.
+
+This research is enabled by utilising data from the Varieties of Democracy (V-Dem) Project [@vdem2023]. V-Dem data enables this research by coding corruption in an unbundled form. While traditional measures of corruption such as the Corruption Perceptions Index (CPI) conceptualise corruption as a singular phenomenon and do not take a nuanced view on it, the V-Dem Project takes a different approach. The V-Dem data codes corruption in regard to both its level as well as its mode. Corruption is separated into "high-level" and "low-level," and also into "theft and embezzlement" and "bribery".
+
+"High-level" refers to corrupt exchanges taking place at the highest echelons of the state, i.e., the head of state, head of government, and government ministers. In contrast, "low-level" refers to everyone else in the government. Meanwhile, "theft and embezzlement" refers to public funds being transferred to private accounts or being generally misused for private purposes. "Bribery" in this context refers to the actor receiving bribes, gifts, or kickbacks in exchange for political favours.
+
+To give an example, a minister taking a cut of taxes paid by corporations and buying a mansion or yacht with it would be theft and embezzlement, not bribery. Relaxing the regulations for a select group of newspapers and television channels in exchange for positive news coverage would fall under bribery, not theft and embezzlement. In the latter case, the exchange does not necessarily need to be of a monetary nature. This distinction is important, as they in fact are different phenomena, particularly insofar as they affect politics. Bribery in this conceptualisation forms one of the foundations of new authoritarianism as described by @levitsky2002elections and @guriev2019. Therefore, there is a strong theoretical reason to unbundle corruption and look at what it entails in specific.
+
+I use other variables to reinforce my models and make them more robust. The theory of informational autocracy places emphasis on how autocrats construct their governments on an image of competence, and therefore, the degree to which a regime is legitimised by its performance matters. V-Dem also provides data on this. Alongside this measure, I use more standard controls such as the economic development of a country, measured by gross domestic product (GDP) per capita, and natural resource rents as a percentage of GDP in order to account for the distorting effect petroleum (or other natural resource rents) may have on the cost of repression and co-optation. In addition, I attempt to capture the degree to which an autocratic state utilises democratic institutions by incorporating a country's electoral democracy index. As I include all autocracies in the world, I also control for whether a country is communist or not, and control for geopolitical region. Analyses are conducted using ordinary least squares (OLS) regressions, with all variables being interval or categorical variables.
+
+I find that there is a statistically significant relationship between political violence and low-level bribery. As political violence increases, so too does low-level bribery. This is consistently the case in every model, regardless of the control variables included. It should be emphasised that the sample is restricted solely to authoritarian states, and remains the case even when the level of democracy is accounted for.
+
+I also run a secondary analysis as a robustness check using a different dependent variable. Unlike the expert-coded "low-level bribery" dependent variable, the time it takes to open a business in days is used in this secondary analysis. This is a proxy measure for corruption for which there is directly observed data, obtained from the World Bank. The reasoning behind this variable is that it would require longer to go through the bureaucracy of opening a new business as one pays more and more bribes at additional points. The findings from the secondary analysis are consistent with the first one, further corroborating my proposed theory.
 
 ## Authoritarian Governments and Corruption
 
-Increasingly, autocracies are transitioning away from heavy-handed methods to maintain control. Brutally repressive dictatorships such as those of Samuel Doe's regime in Liberia or Mobutu Sese Seko's Congo are an increasingly rare sight. This, however, does not necessarily mean that dictatorships are vanishing. Instead, this trend has also witnessed dictators changing the means by which they cling onto power. As trends in the world shift and liberal democratic models of governance seem more to be the global norm, autocrats utilise more targeted, precise, less violent, and generally less overt means of repressing dissent.
+Much of the literature on corruption in authoritarian systems either focuses on how authoritarian governments prevent corruption, or what function corruption serves within an authoritarian system. Perspectives closer to the economics discipline view bribery as a bargaining process between individuals and the state [@wang2014] or as a consequence of poor institutionalisation of property rights [@johnson2000;@marcouiller1995]. While these studies shed much-needed light on the economic conditions which generate bribery in countries, they often do not deal with the political causes and consequences of corrupt practices.
 
-Whether or not a country will utilise these new methods is influenced by the size of the "informed elite" [@guriev2020]. The "informed elite" refers to the section of the population which can perceive the constraints upon the ruler, while the general public does not perceive these limitations [@guriev2019, p. 101].
+Therefore, political scientists have sought to understand the "why" and "how" of corruption alongside economists. @rose1978, breaking ground on this research agenda, devotes a chapter of her book to low-level corruption, focusing on how preventative measures only amount to "fixed costs" of business [@rose1978, p. 219]. Institutionalist approaches from political science have also placed corruption as an informal institution facilitating bargaining, similar to the economics perspectives [@helmke2012], though the field is not unified in this view and there are holdouts as to whether corruption constitutes an institution or not. Other studies focus on different "bribery regimes," finding that a strong state capacity to police potential offenders limits low-level bribery [@shleifer1993]. There are efforts to untangle the conceptual web around the phenomenon of corruption, with democracies experiencing what is referred to as "corrupt political processes" and not rampant "bureaucratic corruption" [@roseackerman1999]. Indeed, much of the literature on corruption originates from how corrupt practices take place in democratic settings. Studies show that electoral systems are influential on corruption [@torsten2003], and that clientelism---where narrow interests are prioritised by politicians in exchange for votes---thrives in weak institutional contexts [@shefter1977]. The framework of an authoritarian model of governance, on the other hand, brings an additional dimension to our perspective on corruption. It is no longer a mere dysfunction of a system ideally operating without it, but instead part and parcel of the system.
 
-One of the means by which rulers maintain their grip on power is by creating the impression of competence [@lamberova2021; @guriev2019; @gerschewski2013]. Competence is a broad concept and difficult to pin down, but within the framework of this paper, it generally refers to delivering positive economic outcomes. These outcomes are typically high economic growth rates, lower unemployment rates, stable or decreasing costs of living, and acceptable levels of inflation. 
+In the absence of cross-country studies, researchers have come up with different ways to compare corruption across different localities, using different municipalities in decentralised countries to do so [@yang2004remaking]. This may point towards certain configurations of decentralisation and power diffusion being one factor contributing to higher rates of corruption [@fan2009political]. Novel research such as that of @cai2008 utilises proxy measures to capture bribery costs to private companies and show that bribery plays a role in both facilitating state services as well as protection from the state. 
 
-Whatever the precise mechanism of holding power may be, the fact remains that autocratic leaders generally seek to maintain power for as long as they do. This is an assumption, but I believe that it is an easily defended assumption. It is an extremely common assumption of studying the behaviour of politicians in democratic settings, and I argue that the factors incentivising politicians in democratic settings to maintain their status are only exacerbated in authoritarian settings. Autocratic leaders face additional threats should they lose power: the loss of accumulated wealth, freedom, or even the lives of their loved ones or themselves. Put more simply, there tends to be far more at risk for an autocrat who loses power compared to a democratic incumbent who loses an election. If anything, the  likelihood that an autocrat being ousted through an election is far less than the likelihood of their ouster coming about by way of a violent coup d'etat, revolution, or palace coup is one piece of evidence.
+A parallel line of research bridges the gap between corruption and comparative authoritarianism. In particular, regimes which are neither fully autocratic nor fully democratic---hybrid regimes---have been objects of interest, with "competitive authoritarian" emerging as a term used to describe these regimes which straddle the line between autocratic and democratic [@levitsky2002elections]. These hybrid regimes are characterised by quasi-democratic institutions such as regular elections [@brancati2014democratic], which serve as feedback mechanisms for an otherwise closed government [@gandhi2007authoritarian;@gandhi2008political].
 
-Much of the literature on corruption is derived from how corrupt practices take place in democratic settings. Studies show that electoral systems are influential on corruption [@torsten2003], and that clientelism---where narrow interests are prioritised by politicians in exchange for votes---thrives in weak institutional contexts [@shefter1977]. The framework of an authoritarian model of governance, on the other hand, brings an additional dimension to our perspective on corruption. It is no longer a mere dysfunction of a system ideally operating without it, but instead part and parcel of the system.
+Differences between autocracies also become evident here: regimes which can extract natural resources and export them for revenue differ in their institutional compositions from those which require human capital [@ross2001does;@ross2012oil]. Rentier states such as Saudi Arabia, Venezuela, or Qatar are able to use their vast wealth to simultaneously repress and co-opt [@wright2015oil].
 
-Corruption is an integral part of maintaining power in autocratic systems [@fjelde2014]. Dictators never rule alone: they are always beholden to some kind of coalition or elite to maintain their rule for them. Erdoğan would not be Erdoğan without his cronies in the media and construction sectors, and Orbán would not be Orbán without his grip on news media. Even traditional dictators, such as the Kim dynasty in North Korea, rely upon regime elites to maintain their grip on power, such as the military, police forces, or some other combination of elites. Corruption is a part of keeping these elites loyal to the ruling class. In specific, corruption in autocratic systems serves both as the "policy compromise" as well as "rent sharing" methods of buying loyalty from elites [@gandhi2006]. 
+These regimes are not the main focus of this paper. Instead, I focus on regimes which cannot rely almost exclusively on natural resources for revenue. States such as Hungary [@bozoki2021rise] or Turkey [@esen2016rising] do not have large reserves of natural gas or petroleum which they can export and generate massive revenues. Even when they do, as Russia does, a large population makes it almost impossible for the dissemination of private rewards to maintain power as it can in the Gulf monarchies. Therefore, these countries are forced into diversifying their economies and following some path of modernisation in order to achieve economic success.
 
-A different yet similar way of looking at maintaining power is through the distributing private goods to the crucial elements of a regime [@demesquita2005]. In this framework, the ruler is incentivised to identify the precise coalition he requires to maintain in order to continue ruling. This coalition, ideally as narrow and limited as possible, is kept on board with the ruler through the issuing of private goods---luxury cars, extravagant dinners, aged whisky^[News outlets have reported that the late North Korean leader, Kim Jong Il, spent as much as \$30 million annually on imported liquor.], decadent mansions^[Russian defence minister Sergei Shoigu has been accused of owning a mansion worth \$18 million by Russian opposition figures.]---while effectively disenfranchising those not in the ruling elite. While there are good criticisms of @demesquita2005, the selectorate theory is useful in that it allows us the bridge the gap between the pursuit of private wealth and maintaining political power. In essence, private wealth in the context of an authoritarian system is translated into political power in a scale usually not observed in democratic societies.
+The educated and skilled labour force necessary for economic success in this situation generates a middle-class of citizenry, an "informed elite". This informed elite is politically affluent and direct repression often incurs a cost to the regime. Therefore, a large informed elite pushes regimes to utilise newer methods of tilting the playing field [@guriev2020]. These regimes maintain a façade of democracy while tilting the playing field strongly in favour of the incumbent. Therefore, this "new authoritarianism" tends to prefer the utilisation of less violent, more subtle means of restricting the democratic arena. Blatant violations of human rights such as mass murder, torture, and the disappearing of dissidents occur far less, if at all.
 
-On the other hand, the literature is not united in the conclusion that authoritarian regimes necessarily foster corruption. For instance, regimes with longer time horizons are found to be less corrupt than more short-lived regimes [@chang2010], while regimes with binding legislatures tend to be less corrupt than those which have unbinding legislatures [@wright2008].  
+One method of maintaining power in these regimes is establishing a pro-government line in news media [@besley2006handcuffs;@yildirim2021dynamics] and channelling state resources to the owners of these news companies in order to co-opt them. It is here that corruption plays a role within the competitive authoritarian framework. Corruption is an integral part of maintaining power in autocratic systems [@fjelde2014]. Dictators never rule alone: they are always beholden to some kind of coalition or elite to maintain their rule for them. Erdoğan would not be Erdoğan without his cronies in the media and construction sectors, and Orbán would not be Orbán without his grip on news media. Even traditional dictators, such as the Kim dynasty in North Korea, rely upon regime elites to maintain their grip on power, such as the military, police forces, or some other combination of elites. Corruption is a part of keeping these elites loyal to the ruling class. In specific, corruption in autocratic systems serves both as the "policy compromise" as well as "rent sharing" methods of buying loyalty from elites [@gandhi2006].
 
-The elite, however, do not only engage in the above. The situation described above would fall under embezzlement and theft, *not* bribery. Bribery is better illustrated with the examples @roseackerman1999 provides: companies seeking special treatment in legislation exchange for campaign contributions, or in the framework of an authoritarian system, giving a certain cut of their profits to the ruling elite in exchange for ease of business. A more critical perspective would argue that this is precisely the form of corruption prevalent in advanced capitalist economies. 
+A different yet similar way of looking at maintaining power is through the distributing private goods to the crucial elements of a regime [@demesquita2005]. In this framework, the ruler is incentivised to identify the precise coalition he requires to maintain in order to continue ruling. This coalition, ideally as narrow and limited as possible, is kept on board with the ruler through the issuing of private goods---luxury cars, extravagant dinners, aged whisky[^1], decadent mansions[^2]---while effectively disenfranchising those not in the ruling elite. While there are good criticisms of @demesquita2005, such as its elimination of "politics" in politics, the selectorate theory is useful in that it allows us the bridge the gap between the pursuit of private wealth and maintaining political power. In essence, private wealth in the context of an authoritarian system is translated into political power on a scale usually not observed in democratic societies.
+
+[^1]: News outlets have reported that the late North Korean leader, Kim Jong Il, spent as much as \$30 million annually on imported liquor.
+
+[^2]: Russian defence minister Sergei Shoigu has been accused of owning a mansion worth \$18 million by Russian opposition figures.
+
+The elite, however, do not only engage in the above. The situation described above would fall under embezzlement and theft, *not* bribery. Bribery is better illustrated with the examples @roseackerman1999 provides: companies seeking special treatment in legislation exchange for campaign contributions, or in the framework of an authoritarian system, giving a certain cut of their profits to the ruling elite in exchange for ease of business. A more critical perspective would argue that this is precisely the form of corruption prevalent in advanced capitalist economies.
 
 This is only one level of corruption, where the ruling elite siphon wealth and resources from the country and use it in their power plays, or where the elite receive kickbacks in exchange for favours to the economic elite. Yet, this is not the only type of corruption which pervades societies. There is a difference between "grand" and "petty" corruption [@amundsen1999; @doig2013], with the former referring to lawmakers being corrupt, while the latter can refer to anything from bureaucrats to the most local of civil servants. Petty corruption (sometimes referred to as street-level corruption) refers to agents such as police officers, customs inspectors, or government employees with power over daily minutiae of state functions [@nieuwbeerta2003]. The corruption involved here usually does not involve the siphoning of state assets to private bank accounts. Instead, it involves requesting informal kickbacks from the non-state actor in exchange for providing a service. This non-state actor can be a citizen applying for a driver's licence, or a small-business owner obtaining a permit to practice her profession. Whereas before the state was in a providing role, in this instance the state is the receiving role.
 
 Formulating a robust theoretical definition of corruption and what it entails is beyond the scope of this paper. Corruption is subjective: what is considered corrupt and is illegal in one country or society may not necessarily be either in other contexts. For the purposes of this paper, however, I utilise the World Bank's defintion of it, referring to it as "the abuse of public power for private benefit". Such a definition fulfils my purpose here for this paper, which is to unpack the conceptual bundle which is "corruption" and empirically test how it relates to the maintenance of political power.
 
-We often conceptualise corruption as a monolithic phenomenon. Rarely do we distinguish between corruption based on who does it, and the method by which it is done.  I propose that there are different types of corruption. The V-Dem database codes four separate variables on corruption. These are not only differentiated by the level of corruption, but also by the nature of the corruption taking place. The data differentiates between "executive" and "public sector" corruption, the former relating to the "head of state, the head of government, and cabinet ministers" [@vdem2023codebook, pp. 114-115] while the latter refers to "typical person[s] employed by the public sector, excluding the military" [@vdem2023codebook, pp. 115-116]. In addition to this, the V-Dem project also draws a line between "embezzlement and theft" and "bribery". Embezzlement and theft in their conceptualisation refers to the misappropriation of public funds for personal use. In contrast, bribery refers to the granting of favours in exchange for material gain.
+We often conceptualise corruption as a monolithic phenomenon. Rarely do we distinguish between corruption based on who does it, and the method by which it is done. I aim to unbundle the concept of "corruption" into its constituent parts, and seek to investigate how these separate modes of corruption operate, and how they are influenced by politics. The V-Dem database codes four separate variables on corruption. These are not only differentiated by the level of corruption, but also by the nature of the corruption taking place. The data differentiates between "executive" and "public sector" corruption, the former relating to the "head of state, the head of government, and cabinet ministers" [@vdem2023codebook, pp. 114-115] while the latter refers to "typical person[s] employed by the public sector, excluding the military" [@vdem2023codebook, pp. 115-116]. In addition to this, the V-Dem project also draws a line between "embezzlement and theft" and "bribery". Embezzlement and theft in their conceptualisation refers to the misappropriation of public funds for personal use. In contrast, bribery refers to the granting of favours in exchange for material gain.
 
-When phrased so, it is not difficult to understand why I wish to study these two concepts separately. They are *different* types of problems, and while they are similar, they can reasonably be thought to lead to different outcomes in governance. This is true not only of the difference between embezzlement and bribery, but also the difference in the status of those committing this corruption. The consequences of cabinet-level officials embezzling funds *or* taking bribes will most certainly be different from that of a patrolling police officer doing the same. I propose that decoupling these two concepts from the larger concept of "corruption" allows a more nuanced approach to the study of corruption as a whole.
+When phrased so, it is not difficult to understand why studying these two concepts separately would lead to stronger theoretical conceptions of the world as well as more precise empirical analyses. They are *different* types of problems, and while they are similar, they can reasonably be thought to lead to different outcomes in governance. This is true not only of the difference between embezzlement and bribery, but also the difference in the status of those committing this corruption. The consequences of cabinet-level officials embezzling funds *or* taking bribes will most certainly be different from that of a patrolling police officer doing the same. I propose that decoupling these two concepts from the larger concept of "corruption" allows a more nuanced approach to the study of corruption as a whole.
 
-Why low-level (or street-level) bribery, instead of high-level embezzlement, graft, or bribery? People living in autocratic regimes do not, as @przeworski2022 puts it, live thinking that they are witnessing history; they live through daily routines as we all do. It is an unfortunate yet meaningful aspect of the lives of people, and it is among many of the factors which shape their perception of their governments. This, in turn, makes the perception of corruption (or lack thereof) a meaningful way to understand how they will act towards their government.
+Low-level bribery captures a specific aspect of citizen views towards their governments in that it tends to be closer to ordinary people living their lives. Most people do not live out their lives thinking of their place in history or the grander scale of their country, but instead through daily, established routines [@przeworski2022]; having to pay bribes on the way home from work is far more likely to bother a person than the relatively abstract idea of a government minister illegally taking cuts of profit from a construction company he has never heard of.
 
 ## Informational Autocracy and Corruption
 
-At this point, I draw on the idea of informational autocracy. In this framework, rulers do not seek to impose a certain world-view upon the ruled, as Stalin, Mao, or Hitler did; they seek only to impose the impression of competence upon the ruled [@guriev2019, p. 101]. There is a reason for this. Increasingly, heavy-handed methods of forcing compliance or consent with an autocratic regime is costly. These costs may be incurred in the domestic arena, or the international arena. 
+In order to establish the link between political violence and low-level bribery, I draw on the idea of informational autocracy. In this framework, rulers do not seek to impose a certain world-view upon the ruled, as Stalin, Mao, or Hitler did; they seek only to impose the impression of competence upon the ruled [@guriev2019, p. 101]. There is a reason for this. Increasingly, heavy-handed methods of forcing compliance or consent with an autocratic regime is costly. These costs may be incurred in the domestic arena, or the international arena.
 
-Regimes such as communist Poland and Romania are good example cases of excessive repression backfiring on a regime. Heavy-handed measures resulted in either mass protest leading to a non-violent revolution in the case of Poland, and to a violent revolution and the ouster of Ceaucescu in Romania. In other cases, the loss of international prestige and becoming a pariah state may carry significant material costs, as it has in Iran and North Korea, stunting economic development and therefore impacting political stability.
+Regimes such as communist Poland and Romania are good example cases of excessive repression backfiring on a regime. Heavy-handed measures resulted in either mass protest leading to a non-violent revolution in the case of Poland, and to a violent revolution and the ouster of Ceaucescu in Romania. In other cases, the loss of international prestige and becoming a pariah state may carry significant material costs, as it has in North Korea and Iran, stunting economic development and impacting political stability.
 
-Modern autocrats are all-too aware of this problem. If they could win popular elections fairly, they would not be autocrats. Therefore, they are required to find means by which repression can be targeted, minimised, and used akin to a scalpel, as opposed to a sledgehammer. Therefore, they seek means by which they can intimidate, manipulate, and incentivise self-censorship.
+Whatever the precise mechanism of holding power may be, the fact remains that autocratic leaders generally seek to maintain power for as long as they do. This is an assumption, but I believe that it is an easily defended assumption. It is an extremely common assumption of studying the behaviour of politicians in democratic settings, and I argue that the factors incentivising politicians in democratic settings to maintain their status are only exacerbated in authoritarian settings. Autocratic leaders face additional threats should they lose power: the loss of accumulated wealth, freedom, or even the lives of their loved ones or themselves. Put more simply, there tends to be far more at risk for an autocrat who loses power compared to a democratic incumbent who loses an election. If anything, the likelihood that an autocrat being ousted through an election is far less than the likelihood of their ouster coming about by way of a violent coup d'etat, revolution, or palace coup is one piece of evidence.
 
-This is not, of course, universally true. Were it so, we would not see any "traditional" dictatorships, yet the Gulf monarchies---Saudi Arabia, Qatar, Bahrain---still exist as bastions of traditional dictatorships despite some milquetoast efforts to improve their images in the eyes of a modern liberal audience. Therefore, there must be a deciding factor which pushes autocrats to pursue such tactics instead of more heavy-handed methods.
+Modern autocrats are all-too aware of this problem. While they may not face death, rulers of less repressive regimes can nonetheless face the loss of their wealth and material gains, or even their freedom, for as long as they live. If they could win popular elections fairly, they would not be autocrats. Therefore, they are required to find means by which repression can be targeted, minimised, and used akin to a scalpel, as opposed to a sledgehammer. Therefore, they seek means by which they can intimidate, manipulate, and incentivise self-censorship.
 
-As alluded to before, I argue that this factor is the cost of repression. As the cost of repression rises, due to factors such as international condemnation, domestic unrest, or a combination of both domestic and international pressures, an autocrat will be less likely to resort to heavy-handed methods of repression. 
+This is not, of course, universally true. Were it so, we would not see any "traditional" dictatorships, yet the Gulf monarchies---Saudi Arabia, Qatar, Bahrain---still exist as bastions of traditional dictatorships despite some milquetoast efforts to improve their images in the eyes of a modern liberal audience. Therefore, there must be a deciding factor which pushes autocrats to pursue such tactics instead of more heavy-handed methods. As covered in the prior section, this factor is the cost of repression as a function of the size of the "informed elite" [@guriev2019]. As the cost of repression rises, due to factors such as international condemnation, domestic unrest, or a combination of both domestic and international pressures, an autocrat will be less likely to resort to heavy-handed methods of repression.
 
 Instead, as the cost of repression rises the autocrat will rely more on smarter repression methods. These methods can be very simple: intimidation through legal and institutional means is one such straightforward method. Vocal social media users in Turkey, for instance, may well see themselves be charged with "insulting the President" under Article 299 of the Turkish Penal Code, which proscribes a one to four year prison sentence. The prosecuted are rarely actually incarcerated. Instead, the process of a trial wears down the individual, and even the suspended sentence is enough to cow a person to mute or outright cease social media activity. This not only pacifies an individual, but also those around them. As knowledge of this case diffuses among friends and family, these people too become less likely to voice criticism of the government on social media, for fear of being prosecuted.
 
-One prime way governments go about accomplishing this is through the creation of an illusion of competence. I propose that reducing or eliminating low-level bribery---or fostering an image of such---is a very good way of creating the impression of a clean, well-functioning government. The knowledge of corruption generally spreads through news media or rumours, as evidence from China demonstrates [@zhu2013]. In contexts where news media is tightly controlled, rumours and hearsay become the only way to reliably gauge corruption from a citizen's perspective. Since such means of information cannot, by virtue of their nature, be controlled, the root cause needs to be tackled. Therefore, the way to prevent citizens from talking about bribery among low-level officials is to tackle low-level corruption itself.
+One prime way governments go about accomplishing this is through the creation of an illusion of competence. I propose that reducing or eliminating low-level bribery---or fostering an image of such---is a very good way of creating the impression of a clean, well-functioning government. The knowledge of corruption generally spreads through news media or rumours, as evidence from China demonstrates [@zhu2013]. In contexts where news media is tightly controlled, rumours and hearsay become the only way to reliably gauge corruption from a citizen's perspective. Since such means of information cannot, by virtue of their nature, be controlled, the root cause needs to be tackled. Therefore, the way to prevent citizens from talking about bribery among low-level officials is to tackle low-level corruption directly.
 
-Consider an authoritarian state where ordinary citizens are exposed to situations in which they pay bribes regularly. These could take place in the form of frivolous speeding tickets, the renewing of passports, the issuance of business licences, or registration in state schools, to provide a few examples. In each of these instances, a citizen may be---informally---required to pay a bribe in order to obtain a service, without which the service would not be rendered (at least, in a reasonable time). By cracking down on such small-time bribery, a government could visibly improve a citizen's life and prevent them from thinking adversely about the government. In effect, it would be removing a tax on very ordinary daily activities.
+Consider an authoritarian state where ordinary citizens are exposed to situations in which they pay bribes regularly. These could take place in the form of frivolous speeding tickets, the renewing of passports, the issuance of business licences, or registration in state schools, to provide a few examples. In each of these instances, a citizen may be---informally---required to pay a bribe in order to obtain a service, without which the service would not be rendered (at least, in a reasonable time). By cracking down on such small-time bribery, a government could visibly improve a citizen's life and prevent them from thinking adversely about the government. In effect, it would be akin to removing a tax on very ordinary daily activities.
 
 Cracking down on low-level bribery also has the added benefit of not particularly affecting a core part of the ruling elite. Corruption probes inquiring after high-level embezzlement, graft, and theft risk alienating crucial parts of the ruling elite. Consider the Turkish media and construction conglomerates which proliferated during Erdoğan's rule. Were Erdoğan's government to suddenly go after these conglomerates for their corrupt dealings, there is a reasonable risk that their financial and political capital could turn against him, dealing a severe, if not fatal blow to his chances in the following election. Another example can be given from China: it is not far-fetched to claim that Xi Jinping's crackdown on corruption, targeting high-ranking Communist Party officials, has a political angle to it, involving political manoeuvring in order to minimise the political risk to Xi himself as well as to his allies in the Communist Party.
 
-In other words, pursuing the interests of rival elites is risky, even in the context of an autocracy. On the other hand, I assume that the perpetrators of low-level bribery are disorganised and relatively ineffectual, aside from their role as voters. It is difficult to imagine civil servants organising against the government due to problems they face in collecting bribes from citizens. Even if they did, it does not make much sense that they would be able to become a political force based off of this particular issue.
-
-Therefore, lower levels of low-level (or street-level) bribery is a visible means of demonstrating competence, as well as affirming commitment to a clean government to the public. In addition, ensuring lower levels of low-level bribery has less political risks than ensuring less high-level corruption (both bribery and embezzlement).
+In other words, pursuing the interests of rival elites is risky, even in the context of an autocracy. On the other hand, I assume that the perpetrators of low-level bribery are disorganised and relatively ineffectual, aside from their role as voters. It is difficult to imagine civil servants organising against the government due to problems they face in collecting bribes from citizens. Even if they did, it does not make much sense that they would be able to become a political force based off of this particular issue. Therefore, tackling low-level bribery is a visible means of demonstrating competence, as well as affirming commitment to a clean government to the public. In addition, ensuring lower levels of low-level bribery has less political risks than ensuring less high-level corruption (both bribery and embezzlement).
 
 This makes tackling low-level bribery a good avenue of being an "informational autocrat". I propose that as the cost of repression rises, autocratic regimes will resort to cracking down on low-level bribery as a means of creating the image of competence amongst the public they govern. Due to practical difficulties in measuring the cost of repression across various countries, I will operationalise this dependent variable as the political violence which takes place. My reasoning for this is that if political violence were possible and relatively easy to conduct, it would occur. Therefore, political violence which does not occur in the context of an authoritarian regime is taken as a sign that there are higher costs associated with it. Therefore, the first hypothesis of this paper is as follows:
 
@@ -125,29 +144,38 @@ H$_1$: Higher costs of repression will cause lower values of low-level bribery.
 
 Since measuring the cost of repression directly is difficult if not impossible, I measure the cost of repression through a proxy. This proxy is the "freedom from physical violence index" created by the Varieties of Democracy Project [@vdem2023], the details of which will be elaborated on in the following section of the paper. The underlying assumption behind this proxy measure is that if repression *can* occur with tolerable cost, it *will* occur. On the other hand, if the ruler determines that the cost of repression is intolerably high, it will *not* occur.
 
+A second hypothesis is derived from the nature of an informational autocrat. Seeking to avoid a heavy-handed approach to maintaining control, such a regime is expected to promote its capability in governance, and in delivering good outcomes for its citizens. Thus:
+
+H$_2$: Higher rates of regime legitimisation on performance grounds will cause lower values of low-level bribery.
+
 ## Data
 
-In order to accomplish the goals stated in the previous section, I will draw on a number of different data. First and foremost, the Varieties of Democracy Dataset [@vdem2023] is used for a vast majority of this paper. The Varieties of Democracy (V-Dem) data is an expert-coded database encompassing virtually every state from the 19th century onwards. It contains more than 4,500 variables in a country-year format, gauging various aspects of a state, from its concentration of political power to its levels of educational indoctrination.
+In order to test the hypotheses laid out in the previous section, I will draw on a number of different data. First and foremost, the Varieties of Democracy Dataset [@vdem2023] is used for a vast majority of this paper. The Varieties of Democracy (V-Dem) data is an expert-coded database encompassing virtually every state from the 19th century onwards. It contains more than 4,500 variables in a country-year format, gauging various aspects of a state, from its concentration of political power to its levels of educational indoctrination.
 
 For the purposes of this paper, I restrict my sample to only include autocratic governments. In practice, this means including countries where the electoral democracy index is equal to or below 0.42, as recommended by @kasuya2019. The temporal scale of the V-Dem data extends as far back as 1789, though practically speaking, most data entries for the variables in question start in the 20th century.
 
 The nature of the data has disadvantages alongside its advantages. The first and foremost advantage using the V-Dem data brings is that it provides some measure for the concept I am trying to capture. Due to its nature, corruption is inherently elusive to a researcher's eyes. It necessitates either the development of clever proxy measures, or some type of subjective evaluation of a country's level of corruption. The V-Dem data provides the latter. It provides a reliable estimate of every country's levels of corruption in various spheres with a replicable and transparent codebook. The second advantage of utilising V-Dem data is the sheer number of data points it provides. While more data is not necessarily always good, the high number of data points contained within permits analysis to be sufficiently robust.
 
-The utilisation of V-Dem data is not without its weaknesses. A fundamental issue that arises with such a dataset is the inevitable subjectivity of the subject matter. Inherently, this paper assumes that a certain type of political behaviour---that defined by the researchers of the V-Dem project---necessarily constitutes corruption. This is an inherent limitation of this paper. This data type is inextricably tied to how corruption is conceptualised in the advanced, post-industrial societies of the world, and may consider behaviours considered ordinary, ethical, or legal in other context to be corrupt, or vice versa.
+The utilisation of V-Dem data is not without its weaknesses. A fundamental issue that arises with such a dataset is the inevitable subjectivity of the subject matter. Inherently, this paper assumes that a certain type of political behaviour---that defined by the researchers of the V-Dem project---necessarily constitutes corruption. This is an inherent limitation of this paper. This data type is inextricably tied to how corruption is conceptualised in the advanced, post-industrial societies of the world, and may consider behaviours considered ordinary, ethical, or legal in other context to be corrupt, or vice versa. Much of this criticism has been levied by @treisman2007, who essentially questions the bias of such indices, though he does not refer to the V-Dem project in specific, instead focusing on the Corruption Perceptions Index, the World Bank, and the International Country Risk Guide. Regardless, the methodological base of his criticism applies to the V-Dem data. I recognise the data to be a limitation in regards to the overall validity of the paper.
 
-There is some defence to be made in favour of this conceptualisation. While we may debate the subjectivity of corruption, the adverse political and economic outcomes from corrupt practices are mostly evident. Therefore, absent a better conceptualisation of corruption, the way in which the V-Dem Project has conceptualised corruption appears to capture what it seeks to capture. A less abstract and more material problem with this data is that it is not based upon a particular measure or set of measures, but instead the knowledge of coders. While the V-Dem Project is meticulous and rigorous in its coding practices, this is still a factor which needs to be kept in mind regarding the quality of the data.
+There is some defence to be made in favour of this conceptualisation, however. While we may debate the subjectivity of corruption, the adverse political and economic outcomes from corrupt practices are mostly evident. Therefore, absent a better conceptualisation of corruption, the way in which the V-Dem Project has conceptualised corruption appears to capture what it seeks to capture. A less abstract and more material problem with this data is that it is not based upon a particular measure or set of measures, but instead the knowledge of coders. While the V-Dem Project is meticulous and rigorous in its coding practices, this is still a factor which needs to be kept in mind regarding the quality of the data.
 
-Other data are also utilised, though not in the primary analyses. @guriev2019 provide a time-series data of mass killings in a number of countries in their replication materials. I use this data as a robustness check to see whether the existence of mass killings in a given number of years affects the outcome variable. World Bank data is used specifically for other auxiliary analyses, to replace the main dependent variable with another as another form of robustness check. In addition, I use some World Bank data to incorporate some control variables such as aid as a percentage of gross national income, and natural resource rents as a percentage of gross domestic product. The World Bank data is only available from years 1960 onwards, hence limiting the scope of the analyses run through it; on the upside, the measure used is a direct measure and not the result of expert coding, explaining the robustness it achieves.
+Other data are also utilised, though not in the primary analyses. @guriev2019 provide a time-series data of mass killings in a number of countries in their replication materials. I use this data as a robustness check to see whether the existence of mass killings in a given number of years affects the outcome variable. World Bank data is used specifically for other auxiliary analyses, to replace the main dependent variable with another as another form of robustness check. In addition, I use some World Bank data to incorporate some control variables such as aid as a percentage of gross national income, and natural resource rents as a percentage of gross domestic product. The World Bank data is only available from years 1960 onwards, hence limiting the temporal scope of the analyses run through it; on the upside, the measure used is a direct measure and not the result of expert coding, explaining the robustness it achieves.
 
 The dependent variable I use is the V-Dem "public sector corrupt exchanges" variable. This is a variable coded ordinally by coders and transformed into an integral variable by the V-Dem Project [@vdem2023codebook, pp. 115-116]. Besides the transformation conducted by the V-Dem Project, I also reverse the scale of the variable. Normally, the variable is coded from 0 to 4, with higher values corresponding to *less* corruption. This coding scheme makes it extremely unintuitive to interpret regression results with minimal advantages. In reversing it, I make it so that higher values correspond to higher values of corruption, which is easier to interpret.
 
 The primary independent variable used is the "physical violence index". This is an interval variable, coded from 0 to 1, with higher values representing *more freedom from physical violence* [@vdem2023codebook, p. 297]. In other words, as the value gets closer to 1, the less political violence is expected in the country. While the coding is understandable, I have also reversed this variable's scale in order to make it more easily interpretable.
 
-I utilise other control variables. One such variable is the degree to which the government legitimises its rule on performance grounds. This performance is generally related to good economic outcomes, clean government, and physical security of the governed. This is a crucial control variable, as the theory of informational autocracy proposes that rulers will seek to avoid, generally, utilising heavy-handed means of repression where possible (or, where unnecessary). As covered in the previous section, such regimes can be expected to legitimise their rule through the image of a competent government in the aforementioned areas.
+I utilise other control variables. One such variable is the degree to which the government legitimises its rule on performance grounds. This performance is generally related to good economic outcomes, clean government, and physical security of the governed. This is a crucial control variable, as the theory of informational autocracy proposes that rulers will seek to avoid, generally, utilising heavy-handed means of repression where possible (or, where unnecessary). As covered in the previous section, such regimes can be expected to legitimise their rule through the image of a competent government in the aforementioned areas. This variable also is the direct means by which the second hypothesis relating to government legitimation is tested.
 
-I also add in the "electoral democracy index" for some models. This covers the bare necessities of a democratic system, i.e., free (not necessarily *fair*^[Countries such as Turkey, Hungary, and Poland have free and meaningfully contested elections which are nevertheless significantly biased towards the incumbents through a combination of media control, intimidation, and other means of repressing the opposition.]) elections. This is meant to capture the variation in how authoritarian countries may pay lip service to the ideal of democracy, or go through the motions of democratic rituals. Another control variable is the gross domestic product (GDP) per capita. This is a general variable used to control for the economic development of the country at that year. 
+I also add in the "electoral democracy index" for some models. This covers the bare necessities of a democratic system, i.e., free (not necessarily *fair*[^3]) elections. This is meant to capture the variation in how authoritarian countries may pay lip service to the ideal of democracy, or go through the motions of democratic rituals. While informational autocrats and competitive authoritarian regimes may be classified as such, there is still significant differences---both endogenous and exogenous---to how their nominally democratic systems operate. Including the electoral democracy index attempts to capture the differences in how democratic procedures differ among regimes.
 
-In addition, I also include some other controls in some models for robustness purposes. The first is a regional control, coding countries according to their geopolitical regions. Here, the V-Dem data defines 10 geopolitical regions [@vdem2023codebook, p. 360] from @teorell2023. The second is a control as to whether a country could be considered communist or not. As "communism" in this instance refers to a bundle of institutions and political practices, the definition of which is beyond the scope of this paper, I use data from @reuter2022 to determine whether a country is communist or not. I expand the range of the years covered by @reuter2022 in order to match the years covered by the V-Dem data, hand-coding countries as communist or not communist.
+[^3]: Countries such as Turkey, Hungary, and Poland have free and meaningfully contested elections which are nevertheless significantly biased towards the incumbents through a combination of media control, intimidation, and other means of repressing the opposition.
+
+Another control variable is the gross domestic product (GDP) per capita. This is a general variable used to control for the economic development of the country at that year, and also serves to capture general state capacity. Wealthier states are expected to have more ability to repress as a function of higher state capacity. Therefore, controlling for this allows us to differentiate between an *inability* to repress and a preference for alternative methods of controlling the political arena.
+
+In addition, I also include some other controls in some models for robustness purposes. The first is a regional control, coding countries according to their geopolitical regions. Here, the V-Dem data defines 10 geopolitical regions [@vdem2023codebook, p. 360] from @teorell2023. The second is a control as to whether a country could be considered communist or not. As "communism" in this instance refers to a bundle of institutions and political practices, the definition of which is beyond the scope of this paper, I use data from @reuter2022 to determine whether a country is communist or not. I expand the range of the years covered by @reuter2022 in order to match the years covered by the V-Dem data, hand-coding countries as communist or not communist where necessary.
+
 \renewcommand{\arraystretch}{0.65}
 ```{r summary-statistics, fig.pos='H', include=TRUE}
 datasummary((`Low-level bribery` = v2excrptps) +
@@ -156,7 +184,6 @@ datasummary((`Low-level bribery` = v2excrptps) +
               (`Electoral democracy index` = v2x_polyarchy) +
               (`GDP per capita` = e_gdppc) +
               (`Time required to open business (days)` = businessdays) +
-              (`Aid as % of GNI` = aidgni) +
               (`Natural resource income as % of GDP` = naturalresourcerents) ~
               (Mean + SD + Max + Min + N),
             data = df1,
@@ -165,15 +192,17 @@ datasummary((`Low-level bribery` = v2excrptps) +
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
 ```
 
-Table 1 shows descriptive statistics for the variables used. There is a large number of observations for most of the main variables and a significant degree of variation, demonstrating the value of this research. The low number of observations for the time required to open a business is due to data being available only from 2003 onwards from the World Bank.
+Table 1 shows descriptive statistics for the variables used. There is a large number of observations for most of the main variables and a significant degree of variation, demonstrating the value of this research in greatly expanding the scope relative to what has been done up to now. The low number of observations for the time required to open a business is due to data being available only from 2003 onwards from the World Bank.
+
+The method used in the paper is ordinary least squares (OLS) regression, with continuous and categorical variables. As the data is country-year, standard errors are clustered by country in order to account for residuals being correlated among countries. As a robustness check, Appendix B offers alternative models where instead of clustered standard errors, Newey-West standard errors are used.
 
 ## Analysis
 
-I initially construct four different models with an increasing number of variables. In all of the following models, shown in Table 1, low-level bribery is the dependent variable. On its own, it is seen that physical violence has a positive and statistically significant effect on low-level bribery. In more substantive terms, higher rates of physical violence generate higher rates of low-level bribery.
+I initially construct four different models with an increasing number of variables. In all of the following models, shown in Table 2, low-level bribery is the dependent variable. On its own, it is seen that physical violence has a positive and statistically significant effect on low-level bribery. In more substantive terms, higher rates of physical violence generate higher rates of low-level bribery.
 
 A crucial part of informational autocrats, however, is the effort to convince citizens of the government's right to rule based on the competence of the government. The second model, therefore, includes both the physical violence index as well as the performance legitimation index as the independent variables.
 
-The result from Model 2 shows to us that higher amounts of physical violence *and* higher degrees of performance legitimation lead to higher values on the low-level bribery index. This is puzzling, and does not comport with the theory laid out in the previous sections. On the other hand, Model 3 and 4 include the logged GDP per capita of a country in order to capture the level of development, and the electoral democracy index in order to control for the varying levels of democratic processes within autocracies themselves.
+The result from the second model shows to us that higher amounts of physical violence *and* higher degrees of performance legitimation lead to higher values on the low-level bribery index. This is puzzling, and does not comport with the theory laid out in the previous sections. On the other hand, the third and fourth models include the logged GDP per capita of a country in order to capture the level of development, and the electoral democracy index in order to control for the varying levels of democratic processes within autocracies themselves as described previously.
 
 Doing so renders performance legitimation statistically insignificant, while the effect of physical violence remains directionally the same and statistically significant at the same time. The degree to which an autocracy is "democratic" also has a statistically significant positive effect on low-level bribery. This is a puzzling outcome, and will be discussed further in the following section of this paper.
 
@@ -192,43 +221,38 @@ lm2 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
                  subset = (democracy == 0),
                  data = df1,
                  clusters = country_text_id)
-
 lm3 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc),
                  subset = (democracy == 0),
                  data = df1,
                  clusters = country_text_id)
-
 lm4 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy,
                  subset = (democracy == 0),
                  data = df1,
                  clusters = country_text_id)
-lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc) + v2x_polyarchy + aidgni,
-                 subset = (democracy == 0),
-                 data = df1,
-                 clusters = country_text_id)
-
 ```
+
 \renewcommand{\arraystretch}{0.65}
-```{r report-models-1-to-5, fig.pos='H' ,include=TRUE}
-modelsummary(list(lm1, lm2, lm3, lm4, lm5),
+
+```{r report-models-1-to-4, fig.pos='H' ,include=TRUE}
+modelsummary(list(lm1, lm2, lm3, lm4),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
                           'v2exl_legitperf' = 'Performance legitimation',
                           'log(e_gdppc)' = 'Logged GDP per capita',
                           'v2x_polyarchy' = 'Electoral democracy index',
-                          'aidgni' = 'Aid as % of GNI',
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              notes = list('Standard errors clustered by country.'),
              title = "Basic Models") %>%
-  add_header_above(c(" " = 1, "Low-level bribery" = 5)) %>% 
+  add_header_above(c(" " = 1, "Low-level bribery" = 4)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
 ```
-Then, I add in the regional control, a control for whether a country is communist or not, as well as variables including the aid a country gets as a percentage of gross national income (GNI) and natural resource wealth---from petroleum, natural gas, or precious metals---as a percentage of gross domestic product (GDP).
+
+Then, I add in the regional control, a control for whether a country is communist or not, as well as natural resource wealth---from petroleum, natural gas, or precious metals---as a percentage of gross domestic product (GDP). The region "Western Europe" serves as the reference level for the region variable. This generates three extended models, as shown in Table 3. Communism is not statistically significant in any of the models, while natural resource rents are significant at the 95% confidence interval.
+
 ```{r models-6-to-8}
 lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
@@ -242,14 +266,17 @@ lm7 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                  data = df1,
                  subset = (democracy == 0),
                  clusters = country_text_id)
+
 lm8 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) + 
-                   marx + aidgni + naturalresourcerents, 
+                   marx + naturalresourcerents, 
                  data = df1,
                  subset = (democracy == 0),
                  clusters = country_text_id)
 ```
+
 \renewcommand{\arraystretch}{0.55}
+
 ```{r report-models-6-to-8, fig.pos='H' ,include=TRUE}
 modelsummary(list(lm6, lm7, lm8),
              output = 'kableExtra',
@@ -258,8 +285,7 @@ modelsummary(list(lm6, lm7, lm8),
                           'v2exl_legitperf' = 'Performance legitimation',
                           'log(e_gdppc)' = 'Logged GDP per capita',
                           'v2x_polyarchy' = 'Electoral democracy index',
-                          'marx' = 'Communist',
-                          'aidgni' = 'Aid as % of GNI',
+                          'marx1' = 'Communist',
                           'naturalresourcerents' = 'Natural resource rents as % of GDP',
                           'relevel(region, ref = 5)1' = 'Eastern Europe and post-Soviet',
                           'relevel(region, ref = 5)2' = 'Latin America',
@@ -278,9 +304,36 @@ modelsummary(list(lm6, lm7, lm8),
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") %>% 
   pack_rows("Region", start_row = 13, end_row = 29, bold = FALSE)
 ```
-The results here are somewhat interesting. In both models, the relationship between physical violence and low-level bribery remains positive and statistically significant, while a country being communist or not has no statistical bearing on this relationship. The region "Western Europe" serves as the reference level for the region variable. On its own, some regions exhibit statistical significance, but the addition of the natural resource and aid variables in the third model removes much of this, while natural resource rents have a statistically significant positive relationship with low-level bribery.
+
+The results here are somewhat interesting. In both models, the relationship between physical violence and low-level bribery remains positive and statistically significant, while a country being communist or not has no statistical bearing on this relationship. On its own, some regions exhibit statistical significance, but the addition of the natural resource variable in the third model removes much of this, while natural resource rents have a statistically significant positive relationship with low-level bribery.
+
+Figure 1 below visualises the distribution of physical (political) violence among the geopolitical regions used in the previous models.
+
+\floatplacement{figure}{H}
+```{r visualise-model-6-8, fig.cap="Distribution of physical violence among regions", include=TRUE}
+df1 %>% 
+  filter(., democracy == 0) %>% 
+  ggplot(., aes(x = region,
+                y = reversr(v2x_clphy))) +
+  geom_boxplot() +
+  labs(x = "Geopolitical region",
+       y = "Physical violence index") +
+  scale_x_discrete(labels = c('Eastern Europe and post-Soviet',
+                              'Latin America',
+                              'North Africa and Middle East',
+                              'Sub-Saharan Africa',
+                              'Western Europe and North America',
+                              'Eastern Asia',
+                              'Southeastern Asia',
+                              'Southern Asia',
+                              'Pacific',
+                              'Caribbean')) +
+  coord_flip() +
+  theme_bw()
+```
 
 Finally, as a robustness check, I change the dependent variable to a proxy measure of low-level bribery. This is the time it takes to open a business in days, with data drawn from the World Bank. However, the models constructed with this dependent variable have a substantial weakness in that data is only available from 2003 onwards, which severely restricts the sample size relative to the primary models.
+
 ```{r models-9-to-13}
 lm9 <- lm_robust(businessdays ~ reversr(v2x_clphy),
                  data = df1,
@@ -304,12 +357,14 @@ lm12 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
                  subset = (democracy == 0),
                  clusters = country_text_id)
 lm13 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc) + v2x_polyarchy + aidgni + naturalresourcerents,
+                   log(e_gdppc) + v2x_polyarchy + naturalresourcerents,
                  data = df1,
                  subset = (democracy == 0),
                  clusters = country_text_id)
 ```
+
 \renewcommand{\arraystretch}{0.65}
+
 ```{r report-models-9-to-13, fig.pos='H' ,include=TRUE}
 modelsummary(list(lm9, lm10, lm11, lm12, lm13),
              output = 'kableExtra',
@@ -318,7 +373,6 @@ modelsummary(list(lm9, lm10, lm11, lm12, lm13),
                           'v2exl_legitperf' = 'Performance legitimation',
                           'log(e_gdppc)' = 'Logged GDP per capita',
                           'v2x_polyarchy' = 'Electoral democracy index',
-                          'aidgni' = 'Aid as % of GNI',
                           'naturalresourcerents' = 'Natural resource rents as % of GDP',
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
@@ -327,6 +381,7 @@ modelsummary(list(lm9, lm10, lm11, lm12, lm13),
   add_header_above(c(" " = 1, "Time to open business (days)" = 5)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
 ```
+
 Even though the sample size is most likely responsible for less-than-ideal results, we still see that the simple relationship in the first model holds up even when we change the dependent variable to something that approaches low-level bribery from another perspective, albeit at the 95% confidence interval. Indeed, we see that the physical violence index is positively related to the time it takes to open a business. Substantially, higher levels of physical violence correspond to more time consumed to open a business, which could indicate the necessity of going through either long or frequent bureaucratic processes, which could also increase the frequency of bribes needed to get through the processes successfully.
 
 On the other hand, the final model where aid and natural resource rents are included changes the picture. Physical violence ceases to be statistically significant in this model, while natural resource rents have a substantial and statistically significant impact on the number of days it takes to open a business.
@@ -335,9 +390,10 @@ On the other hand, the final model where aid and natural resource rents are incl
 
 Overall, the models demonstrate that there is a significant---both statistical and substantial---relationship between political violence and low-level bribery. The first set of models clearly demonstrates that as political violence in autocracies rise, so too does low-level bribery. This persists through other models, even as we add in control variables such as electoral democracy index and aid as a percentage of gross national income.
 
-Figure 1 visualises this simple relationship, with only one independent variable, which is the physical violence index. The data points have been significantly adjusted to be less noticeable, as their number draws attention away from the linear relationship. As seen in the figure, there is a linear and positive relationship between physical violence and low-level bribery among autocracies.
+Figure 2 visualises this simple relationship, with only one independent variable, which is the physical violence index. The data points have been significantly adjusted to be less noticeable, as their number draws attention away from the linear relationship. As seen in the figure, there is a linear and positive relationship between physical violence and low-level bribery among autocracies.
 
 \floatplacement{figure}{H}
+
 ```{r corruption-violence, fig.cap="Physical violence and low-level bribery", fig.width=5, fig.height=4, include=TRUE}
 df1 %>% 
   filter(., democracy == 0) %>% 
@@ -350,17 +406,24 @@ df1 %>%
   theme_bw()
 ```
 
-It should be mentioned here that what is referred to as the physical violence index in these models seeks to capture *political* violence perpetrated by the state or state actors. Therefore, this directly links political violence---direct means of repression---with higher rates of low-level bribery. In other words, we can reject the null for our hypothesis.
+It should be mentioned here that what is referred to as the physical violence index in these models seeks to capture *political* violence perpetrated by the state or state actors. Therefore, this directly links political violence---direct means of repression---with higher rates of low-level bribery. In other words, we can reject the null for the first hypothesis. There is both a statistically and a substantially significant relationship between physical---or political---violence and low-level bribery distinct from overall corruption.
+
+On the other hand, the relationship between performance legitimation and low-level bribery is shakier. In models where GDP per capita and the electoral democracy index is incorporated, performance legitimation becomes statistically insignificant. This situation persists in the extended models utilising regional controls. Only in the model where the two independent variables are the physical violence index and performance legitimation does the latter have a statistically significant effect. With the more robust models in mind, we cannot reject the null hypothesis for the second hypothesis.
 
 We do see, across almost all models, that the electoral democracy index also has a positive relationship with low-level bribery in autocracies. The sample used in all of the models includes only autocratic regimes, as mentioned in the data section. Therefore, this is a meaningful control variable in that it captures the variation among authoritarian regimes in how they incorporate democratic processes and rituals in their otherwise closed systems of government. This is puzzling, and needs to be addressed adequately.
 
-Selectorate theory [@demesquita2005] offers one plausible explanation. As the electoral democracy index in an autocratic system rises, we can imagine that the number of influential actors in the system rises. This generates more points where the influential---state actors---can extract prices from the citizenry. 
+Coupled with the statistical insignificance of the performance legitimation variable when the electoral democracy index is incorporated suggests that the level of democracy among these regimes is what captures the level of performance legitimation, with higher levels of democracy leading to a leadership more responsive to signals from the public and regime elites, therefore being quicker to adjust their own signalling accordingly, which may not be captured by the performance legitimation variable.
 
-There may also be an endogeneity problem in including the electoral democracy index alongside the physical violence index, in that the two tend to be strongly correlated.
+Selectorate theory [@demesquita2005] offers another plausible explanation. As the electoral democracy index in an autocratic system rises, we can imagine that the number of influential actors in the system rises. This generates more points where the influential---state actors---can extract prices from the citizenry. On the other hand, by itself, the relationship between the electoral democracy index and low-level bribery is insignificant among autocratic states. It only becomes significant when political violence is included in the model. This indicates that the electoral democracy index captures another aspect of informational autocratic methods of repression. There may also be an endogeneity problem in including the electoral democracy index alongside the physical violence index, in that the two tend to exhibit strong inverse correlation.
 
-We see a similar situation when the dependent variable is changed to how long it takes to open a business in a country in a given year, with a positive linear relationship observed there as well. 
+The comparison between the second and third model in the extended model table is also a finding which needs to be discussed. Most of the regional controls seem to be transferred over to the natural resource rents as a percentage of GDP when that variable is included in the model. This is both intuitive and in line with what the literature has found about natural resource wealth. From a logical standpoint, it is obvious that some regions of the world are richer in natural resources such as petroleum, natural gas, precious metals, or other easily exported raw materials relative to other regions. This creates a geographic imbalance between regions in regard to how much resources they have. For instance, Japan is notoriously resource-starved while Saudi Arabia is famously petroleum-wealthy.
+
+This translates into natural resource rents utilised in the model. Overall, we know that natural resource wealth has detrimental effects on democracy [@ross2001does]. In the framework of this literature, less democracy tends to cause more repressive autocrats. Petroleum wealth (alongside other natural resource rents) not only enables autocrats to utilise more repressive methods, but also nips the problem in the bud before it becomes a situation where the autocrat needs to either co-opt the informed elite or engage in costly repression. As natural resource rents grow, the need for an educated and skilled labour force diminishes, leading to a less affluent or sizeable informed elite, which renders it weaker in the face of a powerful autocrat. This removes the necessity for a regime to turn into an "informational" autocracy in the first place, as traditional methods of repression remain available.
+
+We see a similar situation when the dependent variable is changed to how long it takes to open a business in a country in a given year, with a positive linear relationship observed there as well. Unfortunately, the low sample size does not offer insights beyond the first and the final model. The first model, however, corroborates the findings of the primary models with low-level bribery as the dependent variable, with physical violence having a significant and substantial effect on the time required to open a business.
 
 \floatplacement{figure}{H}
+
 ```{r businessdays-violence, fig.cap="Physical violence and time taken to open a business", fig.width=5, fig.height=4, include=TRUE}
 df1 %>% 
   filter(., democracy == 0) %>% 
@@ -373,22 +436,38 @@ df1 %>%
   theme_bw()
 ```
 
+The fifth model in the alternative model also offers us a minor insight in that higher rates of natural resource rents as a percentage of GDP lead to significant and substantial increases in the time needed to open a business. This was not a tested hypothesis, but it largely falls in line with the scholarship relating to petroleum, democracy, and economic development. As natural resource rents (petroleum included) rise, various sectors of the economy are adversely affected in what is commonly termed the "Dutch disease".
+
 ## Conclusion
 
-There is extensive room for further research on individual types and levels of corruption. Taken as a monolithic whole, the concept of corruption can obfuscate the empirical reality of how corruption takes place, and who it benefits. There is also a relationship between political regimes and corruption which goes beyond conceptualising corruption as a mere unwanted side-effect of governance structures. 
+Modern authoritarian states are increasingly characterised by a preference for subtler, less heavy-handed methods of maintaining power. Where repressive methods are used, they are often targeted, precise, and specific. Rarely do such states unleash security forces on protests or resort to mass incarceration. Instead, they use media to manipulate opinions, harass journalists using legal cases and intimidation, encourage auto-censorship, and come up with creative methods to prevent mass, organised protest from materialising in the first place. In addition, they are rarely built upon a foundation of ideological conviction, but instead are established on more practical grounds such as the efficient delivery of public goods.
 
-In this paper, I have endeavoured to unpack this concept, by breaking down the phenomenon of corruption both by the level at which it takes place, as well as by the object and the subject of the action. Specifically, I have explored the relationship between low-level (or "street-level") corruption and political repression in order to empirically test an aspect of the informational theory of autocracy proposed by @guriev2019.
+@guriev2019 refer to these regimes as "informational autocracies". These regimes rely on the image of being capable and effective governments through extensive media manipulation and sometimes populism (though not necessarily so). I tie their theory of informational autocracy with existing works on corruption and competitive authoritarianism to unpack the concept of corruption, endeavouring to look into how corruption and anti-corruption efforts relate to informational autocrats.
+
+In doing so, I propose that lowering low-level bribery is an important aspect of maintaining an image of competence. Low-level bribery reflects the kind of corruption which is most likely to impact citizens in their ordinary, day-to-day lives, such as having to pay a bribe to obtain a business licence, to enrol in state universities, or to resolve a speeding ticket issue with traffic police, or to obtain photo identification for voting purposes. Such instances of micro-level corruption, I argue, are highly likely to generate impressions of inefficient and incapable governance among the populace, even if the macroeconomic outlook may be optimistic. Therefore, I propose that it is in the best interest of an autocrat seeking to foster an image of good government to quash low-level bribery.
+
+This does not preclude the regime from engaging in high-level embezzlement schemes, thus permitting a dual-track of corruption policies which simultaneously combats low-level bribery in order to reinforce the image of an effective government while permitting high-level embezzlement to funnel resources to cronies in the media and judiciary.
+
+In order to test my theory, I use data from @vdem2023, @guriev2019, and @reuter2022 as well as from the World Bank. I capitalise on the V-Dem Project's decoupling of the concept of corruption: the data separates high-level and low-level corruption, but also draws a line between "bribery" and "embezzlement and theft". This allows the theory to be tested empirically, which I do by running ordinary least squares (OLS) regressions. The primary independent variable used is the physical violence index, which represents how likely politically-motivated and state-sanctioned killings and torture are likely in a country-year. Other models factor in the degree to which an autocracy legitimises its regime based on performance grounds, its level of economic development, the degree to which democratic rituals are observed, and the degree to which state revenues are obtained from natural resource rents.
+
+In doing so, I find that there is a strong statistical and substantial relationship between physical violence and low-level bribery. In other words, as politically-motivated and state-sanctioned physical violence increases, so too does low-level bribery. On the other hand, the degree to which an autocracy legitimises its existence based on performance has no statistically significant effect on bribery. The level of electoral democracy does, however, indicating that autocracies with higher levels of competition suffer from less low-level bribery.
+
+This paper does have its limitations. Ultimately, despite using a sophisticated dataset, the dependent variable in the primary analyses remains the *perception* of corruption, as opposed to corruption itself. This inherently makes it subject to the biases of the coders, as robust as the coding process may be. Regardless, an alternative model utilising a proxy for low-level bribery aims to corroborate the claims made upon the initial analyses, helping make the conclusions derived from them more robust.
 
 \newpage
+
 ## References
 
-<div id="refs"></div>
+::: {#refs} 
+:::
 
 \newpage
+
 ## Appendices
 
 ### Appendix A
 
+The model provided in this appendix utilises a different independent variable to capture the cost of repression. Data on mass killings perpetrated by the state from @guriev2019 is used to create a lagged variable of mass killing. To be more specific, the variable "mass killing" is a dichotomous variable coded "1" if the state has had a mass killing event in the last five years, and "0" otherwise. This variable was not used as a part of the primary analyses due to its limited ability to reflect the variation in political violence.
 ```{r masskilling-model}
 lm14 <- lm_robust(reversr(v2excrptps) ~ masskilling + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
@@ -396,12 +475,14 @@ lm14 <- lm_robust(reversr(v2excrptps) ~ masskilling + v2exl_legitperf +
                   subset = (democracy == 0),
                   clusters = country_text_id)
 ```
+
 \renewcommand{\arraystretch}{0.55}
+
 ```{r report-model-14, include=TRUE}
 modelsummary(lm14,
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
-             coef_map = c('masskilling' = 'Mass killing',
+             coef_map = c('masskilling1' = 'Mass killing',
                           'v2exl_legitperf' = 'Performance legitimation',
                           'log(e_gdppc)' = 'Logged GDP per capita',
                           'v2x_polyarchy' = 'Electoral democracy index',
@@ -419,13 +500,15 @@ modelsummary(lm14,
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              notes = list('Standard errors clustered by country.'),
-             title = "Model 14") %>%
+             title = "Model using mass killings proxy measure for political violence") %>%
   add_header_above(c(" " = 1, "Low-level bribery" = 1)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") %>% 
   pack_rows("Region", start_row = 9, end_row = 25, bold = FALSE)
 ```
 
 ### Appendix B
+
+The main part of the paper utilises standard errors clustered by country for its analyses. This appendix includes the primary five models used in the paper, albeit with Newey-West standard errors as opposed to clustered standard errors as an additional robustness check. There are no substantially different results compared to the models in the main section of the paper.
 
 ```{r models-for-newey-west-std-errors}
 lmA <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy),
@@ -452,6 +535,7 @@ lmE <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
 ```
 
 \renewcommand{\arraystretch}{0.65}
+
 ```{r report-newey-west-errors, include=TRUE}
 modelsummary(list(lmA, lmB, lmC, lmD, lmE),
              output = 'kableExtra',
@@ -464,7 +548,7 @@ modelsummary(list(lmA, lmB, lmC, lmD, lmE),
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              vcov = sandwich::NeweyWest,
-             title = "Models 1-5") %>% 
+             title = "Basic models with Newey-West standard errors") %>% 
   add_header_above(c(" " = 1, "Low-level bribery" = 5)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
 ```

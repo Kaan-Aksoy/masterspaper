@@ -11,7 +11,7 @@ library(lmtest)
 # Load and clean data ----
 mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
   mutate(., region = as_factor(e_regionpol)) %>% # Recoding regions as factors
-  select(., c("country_name", "country_text_id", "year", "v2x_polyarchy", "v2x_clphy",
+  select(., c("country_name", "country_text_id", "year", "v2x_polyarchy", "v2x_clphy", 
               "v2excrptps", "v2exl_legitperf", "e_gdppc", "e_total_resources_income_pc", "region")) %>% 
   mutate(., democracy = as_factor(if_else(v2x_polyarchy <= 0.42, 0, 1)))
 
@@ -165,77 +165,97 @@ modelsummary(list(lm1, lm2, lm3, lm4, lm5),
   add_header_above(c(" " = 1, "Low-level bribery" = 5)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") # Only for knitting
 
-# Create models 6 and 7 ----
+# Create models 6 through 8 ----
 lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
                  data = df1,
+                 subset = (democracy == 0),
                  clusters = country_text_id)
 
 lm7 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) +
                    marx, 
                  data = df1,
+                 subset = (democracy == 0),
+                 clusters = country_text_id)
+lm8 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) + 
+                   marx + aidgni + naturalresourcerents, 
+                 data = df1,
+                 subset = democracy == 0,
                  clusters = country_text_id)
 
-# Report models 6 and 7 ----
-modelsummary(list(lm6, lm7),
+# Report models 6 through 8 ----
+modelsummary(list(lm6, lm7, lm8),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
                           'v2exl_legitperf' = 'Performance legitimation',
                           'log(e_gdppc)' = 'Logged GDP per capita',
                           'v2x_polyarchy' = 'Electoral democracy index',
-                          'relevel(region, ref = 5)1' = 'Region: Eastern Europe and post-Soviet',
-                          'relevel(region, ref = 5)2' = 'Region: Latin America',
-                          'relevel(region, ref = 5)3' = 'Region: North Africa and Middle East',
-                          'relevel(region, ref = 5)4' = 'Region: Sub-Saharan Africa',
-                          'relevel(region, ref = 5)6' = 'Region: Eastern Asia',
-                          'relevel(region, ref = 5)7' = 'Region: Southeastern Asia',
-                          'relevel(region, ref = 5)8' = 'Region: Southern Asia',
-                          'relevel(region, ref = 5)9' = 'Region: The Pacific',
-                          'relevel(region, ref = 5)10' = 'Region: The Caribbean',
                           'marx' = 'Communist',
+                          'aidgni' = 'Aid as % of GNI',
+                          'naturalresourcerents' = 'Natural resource rents as % of GDP',
+                          'relevel(region, ref = 5)1' = 'Eastern Europe and post-Soviet',
+                          'relevel(region, ref = 5)2' = 'Latin America',
+                          'relevel(region, ref = 5)3' = 'North Africa and Middle East',
+                          'relevel(region, ref = 5)4' = 'Sub-Saharan Africa',
+                          'relevel(region, ref = 5)6' = 'Eastern Asia',
+                          'relevel(region, ref = 5)7' = 'Southeastern Asia',
+                          'relevel(region, ref = 5)8' = 'Southern Asia',
+                          'relevel(region, ref = 5)9' = 'Pacific',
+                          'relevel(region, ref = 5)10' = 'Caribbean',
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              notes = list('Standard errors clustered by country.'),
-             title = "Models 6-7") %>%
-  add_header_above(c(" " = 1,
-                     "Low-level bribery" = 2)) %>% 
-  kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") %>%
-  pack_rows("Region", start_row = 11, end_row = 27, bold = FALSE)
+             title = "Extended models with regional controls") %>%
+  add_header_above(c(" " = 1, "Low-level bribery" = 3)) %>% 
+  kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") %>% 
+  pack_rows("Region", start_row = 13, end_row = 29, bold = FALSE)
 
 # Change dependent variable to time it takes to open a business ----
-lm8 <- lm_robust(businessdays ~ reversr(v2x_clphy),
+lm9 <- lm_robust(businessdays ~ reversr(v2x_clphy),
                  data = df1,
+                 subset = (democracy == 0),
                  clusters = country_text_id)
 
-lm9 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf,
-                 data = df1,
-                 clusters = country_text_id)
-
-lm10 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
-                    log(e_gdppc),
+lm10 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf,
                   data = df1,
+                  subset = (democracy == 0),
                   clusters = country_text_id)
 
 lm11 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
-                    log(e_gdppc) + v2x_polyarchy,
+                    log(e_gdppc),
                   data = df1,
+                  subset = (democracy == 0),
                   clusters = country_text_id)
 
-# Report the new models ----
-modelsummary(list(lm8, lm9, lm10, lm11),
+lm12 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
+                    log(e_gdppc) + v2x_polyarchy,
+                  data = df1,
+                  subset = (democracy == 0),
+                  clusters = country_text_id)
+lm13 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
+                    log(e_gdppc) + v2x_polyarchy + aidgni + naturalresourcerents,
+                  data = df1,
+                  subset = (democracy == 0),
+                  clusters = country_text_id)
+
+# Report the models with business days ----
+modelsummary(list(lm9, lm10, lm11, lm12, lm13),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
                           'v2exl_legitperf' = 'Performance legitimation',
                           'log(e_gdppc)' = 'Logged GDP per capita',
                           'v2x_polyarchy' = 'Electoral democracy index',
+                          'aidgni' = 'Aid as % of GNI',
+                          'naturalresourcerents' = 'Natural resource rents as % of GDP',
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              notes = list('Standard errors clustered by country.'),
-             title = "Models 7-10") %>%
-  add_header_above(c(" " = 1, "Time to open business (days)" = 4)) %>% 
+             title = "Basic models with alternative dependent variable") %>%
+  add_header_above(c(" " = 1, "Time to open business (days)" = 5)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
 
 # The boxplot clearly shows to us that there really isn't a difference between
@@ -251,4 +271,3 @@ modelsummary(list(lm8, lm9, lm10, lm11),
 #            ifs != 0) %>%  # Non-democracies. Can also be tried with "7" for dominant parties.
 #   mutate(., country_text_id = ifs) %>% 
 #   select(., c("country_text_id", "year", "liec", "eiec"))
-
