@@ -127,7 +127,7 @@ reversr <- function (x, na.rm = T) {
   min(x, na.rm = T) - x + max(x, na.rm = T)
 }
 
-# Create models 1 to 5 ----
+# Create models 1 to 4 ----
 lm1 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy),
                  data = df1,
                  clusters = country_text_id)
@@ -144,13 +144,9 @@ lm4 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy,
                  data = df1,
                  clusters = country_text_id)
-lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-                   log(e_gdppc) + v2x_polyarchy + aidgni,
-                 data = df1,
-                 clusters = country_text_id)
 
-# Report models 1 to 5 ----
-modelsummary(list(lm1, lm2, lm3, lm4, lm5),
+# Report models 1 to 4 ----
+modelsummary(list(lm1, lm2, lm3, lm4),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
@@ -161,32 +157,32 @@ modelsummary(list(lm1, lm2, lm3, lm4, lm5),
                           '(Intercept)' = 'Intercept'),
              gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
              notes = list('Standard errors clustered by country.'),
-             title = "Models 1-5") %>%
-  add_header_above(c(" " = 1, "Low-level bribery" = 5)) %>% 
+             title = "Models 1-4") %>%
+  add_header_above(c(" " = 1, "Low-level bribery" = 4)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") # Only for knitting
 
-# Create models 6 through 8 ----
-lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+# Create models 5 through 7 ----
+lm5 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
                  data = df1,
                  subset = (democracy == 0),
                  clusters = country_text_id)
 
-lm7 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) +
                    marx, 
                  data = df1,
                  subset = (democracy == 0),
                  clusters = country_text_id)
-lm8 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+lm7 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) + 
                    marx + aidgni + naturalresourcerents, 
                  data = df1,
                  subset = democracy == 0,
                  clusters = country_text_id)
 
-# Report models 6 through 8 ----
-modelsummary(list(lm6, lm7, lm8),
+# Report models 5 through 7 ----
+modelsummary(list(lm5, lm6, lm7),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
@@ -214,35 +210,35 @@ modelsummary(list(lm6, lm7, lm8),
   pack_rows("Region", start_row = 13, end_row = 29, bold = FALSE)
 
 # Change dependent variable to time it takes to open a business ----
-lm9 <- lm_robust(businessdays ~ reversr(v2x_clphy),
+lm8 <- lm_robust(businessdays ~ reversr(v2x_clphy),
                  data = df1,
                  subset = (democracy == 0),
                  clusters = country_text_id)
 
-lm10 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf,
+lm9 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf,
                   data = df1,
                   subset = (democracy == 0),
                   clusters = country_text_id)
 
-lm11 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
+lm10 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
                     log(e_gdppc),
                   data = df1,
                   subset = (democracy == 0),
                   clusters = country_text_id)
 
-lm12 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
+lm11 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
                     log(e_gdppc) + v2x_polyarchy,
                   data = df1,
                   subset = (democracy == 0),
                   clusters = country_text_id)
-lm13 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
+lm12 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
                     log(e_gdppc) + v2x_polyarchy + aidgni + naturalresourcerents,
                   data = df1,
                   subset = (democracy == 0),
                   clusters = country_text_id)
 
 # Report the models with business days ----
-modelsummary(list(lm9, lm10, lm11, lm12, lm13),
+modelsummary(list(lm8, lm9, lm10, lm11, lm12),
              output = 'kableExtra',
              stars = c('*' = .1, '**' = .05, '***' = .01),
              coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
@@ -271,3 +267,25 @@ modelsummary(list(lm9, lm10, lm11, lm12, lm13),
 #            ifs != 0) %>%  # Non-democracies. Can also be tried with "7" for dominant parties.
 #   mutate(., country_text_id = ifs) %>% 
 #   select(., c("country_text_id", "year", "liec", "eiec"))
+lm4_1 <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+              log(e_gdppc) + v2x_polyarchy,
+            data = df1)
+
+ggplot(lm4_1, aes(x = .fitted,
+                  y = .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0) +
+  labs(x = "Fitted",
+       y = "Residual",
+       title = "Non-clustered S.E.")
+
+tmp <- tibble(XS1 = reversr(df1$v2excrptps))
+tmp$residuals <- (lm4$fitted.values - tmp$XS1)
+
+ggplot(tmp, aes(x = XS1,
+                y = residuals)) +
+  geom_point() +
+  geom_hline(yintercept = 0) +
+  labs(x = "Fitted",
+       y = "Residual",
+       title = "Clustered S.E.")
