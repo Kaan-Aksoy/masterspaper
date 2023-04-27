@@ -207,7 +207,7 @@ Table 1 shows descriptive statistics for the variables used. There is a large nu
 
 The models used in the paper are ordinary least squares (OLS) regressions with the aforementioned continuous and categorical variables. The country-year data format brings with it a concern of autocorrelation and heteroskedasticity in the context of linear regression analysis. Due to the nature of the data, it is expected that the value of any variable at time $t$ will strongly predict the value of the same variable at time $t+1$. In addition to this autocorrelation issue, there is a concern of heteroskedasticity---inconsistent standard errors---in the sample. 
 
-I address autocorrelation over time by clustering standard errors by country. This addresses autocorrelation across country units. Appendix B includes the models used for hypothesis testing with Newey-West standard errors instead of clustered standard errors as a robustness check. The Newey-West method of calculating standard errors accounts for both heteroskedasticity and autocorrelation (referred to as "heteroskedasticity and autocorrelation consistent", or "HAC" errors), therefore making these models more robust when both issues are present at the same time. The difference between the models used in the body of the paper (standard errors clustered by country) and the ones provided in Appendix B (Newey-West standard errors) are unsubstantial.
+I address autocorrelation over time by clustering standard errors by country. This addresses autocorrelation across country units. Appendix C includes the models used for hypothesis testing with Newey-West standard errors instead of clustered standard errors as a robustness check. The Newey-West method of calculating standard errors accounts for both heteroskedasticity and autocorrelation (referred to as "heteroskedasticity and autocorrelation consistent", or "HAC" errors), therefore making these models more robust when both issues are present at the same time. The difference between the models used in the body of the paper (standard errors clustered by country) and the ones provided in Appendix C (Newey-West standard errors) are unsubstantial.
 
 ## Analysis
 
@@ -323,7 +323,7 @@ The results here are somewhat interesting. In both models, the relationship betw
 Figure 1 below visualises the distribution of physical (political) violence among the geopolitical regions used in the previous models.
 
 \floatplacement{figure}{H}
-```{r visualise-model-5-7, fig.cap="Distribution of physical violence among regions", include=TRUE}
+```{r boxplot-violence, fig.cap="Distribution of physical violence among regions", include=TRUE}
 df1 %>% 
   filter(., democracy == 0) %>% 
   ggplot(., aes(x = region,
@@ -369,6 +369,7 @@ lm11 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
                  data = df1,
                  subset = (democracy == 0),
                  clusters = country_text_id)
+
 lm12 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + naturalresourcerents,
                  data = df1,
@@ -552,7 +553,7 @@ lmC <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
 lmD <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy,
                  subset = (democracy == 0),
-                 data = df1,)
+                 data = df1)
 ```
 
 \renewcommand{\arraystretch}{0.65}

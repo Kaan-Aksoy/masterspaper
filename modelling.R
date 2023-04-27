@@ -90,18 +90,7 @@ mydata4 <- read_csv("~/Documents/Data/businessopen.csv", skip = 3) %>%
   filter(., country_text_id %in% mydata1$country_text_id) %>% 
   na.omit()
 
-mydata5 <- read_csv("~/Documents/Data/aidpercgni.csv", skip = 3) %>% 
-  mutate(., country_text_id = `Country Code`,
-         country_name = `Country Name`) %>% 
-  select(., -c("Indicator Name", "Indicator Code", "Country Name", "Country Code", "country_name")) %>% 
-  pivot_longer(cols = 1:63,
-               names_to = "year",
-               values_to = "aidgni") %>% 
-  mutate(., year = as.numeric(year)) %>% 
-  filter(., country_text_id %in% mydata1$country_text_id) %>% 
-  na.omit()
-
-mydata6 <- read_csv("~/Documents/Data/natresrents.csv", skip = 4) %>% 
+mydata5 <- read_csv("~/Documents/Data/natresrents.csv", skip = 4) %>% 
   mutate(., country_text_id = `Country Code`,
          country_name = `Country Name`) %>% 
   select(., -c("Indicator Name", "Indicator Code", "Country Name", "Country Code", "country_name")) %>% 
@@ -114,13 +103,22 @@ mydata6 <- read_csv("~/Documents/Data/natresrents.csv", skip = 4) %>%
   na.omit()
 
 # Merge as necessary ----
-df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5, mydata6) %>% 
+df1 <- list(mydata1, mydata2, mydata3, mydata4, mydata5) %>% 
   reduce(left_join, by = c("country_text_id", "year")) %>% 
   distinct(., country_text_id, year, .keep_all = TRUE) # Eliminate duplicates if there are any
 
 # Save the master data to a file so as to be able to provide a replication dataset.
 setwd("~/GitHub/masterspaper")
 write_csv(df1, "kaksoy_masterpaperdata.csv")
+
+# Load cleaned data ----
+# Load the new data file to ensure the analyses can run independently from the piecemeal data.
+rm(list = ls())
+df1 <- read_csv("~/GitHub/masterspaper/kaksoy_masterpaperdata.csv") %>% 
+  mutate(., region = as_factor(region), # Doesn't import as factor, so this step is necessary.
+         democracy = as_factor(democracy),
+         marx = as_factor(marx),
+         masskilling = as_factor(masskilling)) 
 
 # Write a function to reverse the scales of some unintuitively coded variables.
 reversr <- function (x, na.rm = T) {
@@ -176,7 +174,7 @@ lm6 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                  clusters = country_text_id)
 lm7 <- lm_robust(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5) + 
-                   marx + aidgni + naturalresourcerents, 
+                   marx + naturalresourcerents, 
                  data = df1,
                  subset = democracy == 0,
                  clusters = country_text_id)
@@ -231,8 +229,9 @@ lm11 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
                   data = df1,
                   subset = (democracy == 0),
                   clusters = country_text_id)
+
 lm12 <- lm_robust(businessdays ~ reversr(v2x_clphy) + v2exl_legitperf +
-                    log(e_gdppc) + v2x_polyarchy + aidgni + naturalresourcerents,
+                    log(e_gdppc) + v2x_polyarchy + naturalresourcerents,
                   data = df1,
                   subset = (democracy == 0),
                   clusters = country_text_id)
@@ -254,38 +253,125 @@ modelsummary(list(lm8, lm9, lm10, lm11, lm12),
   add_header_above(c(" " = 1, "Time to open business (days)" = 5)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
 
-# The boxplot clearly shows to us that there really isn't a difference between
-# states which have had mass killings in the last three years and those which
-# have not, at least in how Treisman and Guriev (2019) have implemented the
-# measure.
 
-# # Load the DPI data ----
-# dpi <- read_dta("~/Documents/Data/DPI2015/DPI2015.dta") %>% 
-#   naniar::replace_with_na(replace = list(liec = c(-999),
-#                                          eiec = c(-999))) %>% 
-#   filter(., liec <= 5 &
-#            ifs != 0) %>%  # Non-democracies. Can also be tried with "7" for dominant parties.
-#   mutate(., country_text_id = ifs) %>% 
-#   select(., c("country_text_id", "year", "liec", "eiec"))
-lm4_1 <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
-              log(e_gdppc) + v2x_polyarchy,
-            data = df1)
+# Figure 1, boxplot among regions ----
+df1 %>% 
+  filter(., democracy == 0) %>% 
+  ggplot(., aes(x = region,
+                y = reversr(v2x_clphy))) +
+  geom_boxplot() +
+  labs(x = "Geopolitical region",
+       y = "Physical violence index") +
+  scale_x_discrete(labels = c('Eastern Europe and post-Soviet',
+                              'Latin America',
+                              'North Africa and Middle East',
+                              'Sub-Saharan Africa',
+                              'Western Europe and North America',
+                              'Eastern Asia',
+                              'Southeastern Asia',
+                              'Southern Asia',
+                              'Pacific',
+                              'Caribbean')) +
+  coord_flip() +
+  theme_bw()
 
-ggplot(lm4_1, aes(x = .fitted,
-                  y = .resid)) +
-  geom_point() +
-  geom_hline(yintercept = 0) +
-  labs(x = "Fitted",
-       y = "Residual",
-       title = "Non-clustered S.E.")
+# Figure 2, linear model ----
+df1 %>% 
+  filter(., democracy == 0) %>% 
+  ggplot(., aes(x = reversr(v2x_clphy),
+                y = reversr(v2excrptps))) +
+  geom_point(alpha = 0.01) +
+  geom_smooth(col = "firebrick", method = 'lm') +
+  labs(x = "Physical violence index",
+       y = "Low-level bribery") +
+  theme_bw()
 
-tmp <- tibble(XS1 = reversr(df1$v2excrptps))
-tmp$residuals <- (lm4$fitted.values - tmp$XS1)
+# Figure 3, business days model ----
+df1 %>% 
+  filter(., democracy == 0) %>% 
+  ggplot(., aes(x = reversr(v2x_clphy),
+                y = businessdays)) +
+  geom_point(alpha = 0.50) +
+  geom_smooth(col = "firebrick", method = 'lm') +
+  labs(x = "Physical violence index",
+       y = "Time needed to open business (days)") +
+  theme_bw()
 
-ggplot(tmp, aes(x = XS1,
-                y = residuals)) +
-  geom_point() +
-  geom_hline(yintercept = 0) +
-  labs(x = "Fitted",
-       y = "Residual",
-       title = "Clustered S.E.")
+# Appendix A, correlation matrix ----
+df1 %>% 
+  select(., c("v2x_polyarchy", "v2x_clphy", "v2excrptps", "v2exl_legitperf")) %>% 
+  mutate(., `Electoral democracy index` = `v2x_polyarchy`,
+         `Physical violence index` = `v2x_clphy`,
+         `Low-level bribery` = `v2excrptps`,
+         `Performance legitimation` = `v2exl_legitperf`) %>% 
+  select(., -c("v2x_polyarchy", "v2x_clphy", "v2excrptps", "v2exl_legitperf")) %>% 
+  datasummary_correlation(output = "kableExtra") %>% 
+  kable_styling(bootstrap_options = "condensed", latex_options = c("HOLD_position", "scale_down"),
+                full_width = FALSE)
+
+# Appendix B, mass killing model ----
+lm13 <- lm_robust(reversr(v2excrptps) ~ masskilling + v2exl_legitperf +
+                    log(e_gdppc) + v2x_polyarchy + relevel(region, ref = 5),
+                  data = df1,
+                  subset = (democracy == 0),
+                  clusters = country_text_id)
+
+# Reporting model.
+modelsummary(lm13,
+             output = 'kableExtra',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             coef_map = c('masskilling1' = 'Mass killing',
+                          'v2exl_legitperf' = 'Performance legitimation',
+                          'log(e_gdppc)' = 'Logged GDP per capita',
+                          'v2x_polyarchy' = 'Electoral democracy index',
+                          'naturalresourcerents' = 'Natural resource rents as % of GDP',
+                          'relevel(region, ref = 5)1' = 'Eastern Europe and post-Soviet',
+                          'relevel(region, ref = 5)2' = 'Latin America',
+                          'relevel(region, ref = 5)3' = 'North Africa and Middle East',
+                          'relevel(region, ref = 5)4' = 'Sub-Saharan Africa',
+                          'relevel(region, ref = 5)6' = 'Eastern Asia',
+                          'relevel(region, ref = 5)7' = 'Southeastern Asia',
+                          'relevel(region, ref = 5)8' = 'Southern Asia',
+                          'relevel(region, ref = 5)9' = 'Pacific',
+                          'relevel(region, ref = 5)10' = 'Caribbean',
+                          '(Intercept)' = 'Intercept'),
+             gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
+             notes = list('Standard errors clustered by country.'),
+             title = "Model using mass killings proxy measure for political violence") %>%
+  add_header_above(c(" " = 1, "Low-level bribery" = 1)) %>% 
+  kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") %>% 
+  pack_rows("Region", start_row = 9, end_row = 25, bold = FALSE)
+
+# Appendix C, Newey-West errors ----
+lmA <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy),
+          subset = (democracy == 0),
+          data = df1)
+
+lmB <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
+          subset = (democracy == 0),
+          data = df1)
+
+lmC <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+            log(e_gdppc),
+          subset = (democracy == 0),
+          data = df1)
+
+lmD <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+            log(e_gdppc) + v2x_polyarchy,
+          subset = (democracy == 0),
+          data = df1)
+
+# Reporting models.
+modelsummary(list(lmA, lmB, lmC, lmD),
+             output = 'kableExtra',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
+                          'v2exl_legitperf' = 'Performance legitimation',
+                          'log(e_gdppc)' = 'Logged GDP per capita',
+                          'v2x_polyarchy' = 'Electoral democracy index',
+                          '(Intercept)' = 'Intercept'),
+             gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
+             vcov = sandwich::NeweyWest,
+             title = "Basic models with Newey-West standard errors") %>% 
+  add_header_above(c(" " = 1, "Low-level bribery" = 4)) %>% 
+  kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
