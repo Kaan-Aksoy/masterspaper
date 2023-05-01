@@ -362,6 +362,16 @@ lmD <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
           subset = (democracy == 0),
           data = df1)
 
+modelplot(list("Model 1" = lmA, "Model 2" = lmB,
+               "Model 3" = lmC, "Model 4" = lmD),
+          coef_omit = "Intercept",
+          coef_map = c('v2exl_legitperf' = 'Performance legitimation',
+                       'log(e_gdppc)' = 'Logged GDP per capita',
+                       'v2x_polyarchy' = 'Electoral democracy index',
+                       'reversr(v2x_clphy)' = 'Physical violence index'),
+          conf_level = .99) +
+  scale_colour_brewer(palette = "Dark2")
+
 # Reporting models.
 modelsummary(list(lmA, lmB, lmC, lmD),
              output = 'kableExtra',
@@ -467,3 +477,6 @@ modelsummary(list(lm_alt1, lm_alt2, lm_alt3, lm_alt4,
   add_header_above(c(" " = 1, "Low-level bribery" = 4, "High-level bribery" = 4,
                      "High-level theft" = 4, "Low-level theft" = 4)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
+
+##
+
