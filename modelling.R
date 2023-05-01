@@ -11,8 +11,9 @@ library(lmtest)
 # Load and clean data ----
 mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
   mutate(., region = as_factor(e_regionpol)) %>% # Recoding regions as factors
-  select(., c("country_name", "country_text_id", "year", "v2x_polyarchy", "v2x_clphy", 
-              "v2excrptps", "v2exl_legitperf", "e_gdppc", "e_total_resources_income_pc", "region")) %>% 
+  select(., c("country_name", "country_text_id", "year", "v2x_polyarchy", "v2x_clphy",
+              "v2excrptps", "v2exbribe", "v2exembez", "v2exthftps", "v2exl_legitperf",
+              "e_gdppc", "e_total_resources_income_pc", "region")) %>% 
   mutate(., democracy = as_factor(if_else(v2x_polyarchy <= 0.42, 0, 1)))
 
 mydata2 <- read_delim("~/Documents/Data/masskillings.txt") %>% 
@@ -374,4 +375,95 @@ modelsummary(list(lmA, lmB, lmC, lmD),
              vcov = sandwich::NeweyWest,
              title = "Basic models with Newey-West standard errors") %>% 
   add_header_above(c(" " = 1, "Low-level bribery" = 4)) %>% 
+  kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
+
+lm_alt1 <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy),
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt2 <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf,
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt3 <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc),
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt4 <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                   log(e_gdppc) + v2x_polyarchy,
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt5 <- lm(reversr(v2exbribe) ~ reversr(v2x_clphy),
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt6 <- lm(reversr(v2exbribe) ~ reversr(v2x_clphy) + v2exl_legitperf,
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt7 <- lm(reversr(v2exbribe) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                log(e_gdppc),
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt8 <- lm(reversr(v2exbribe) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                log(e_gdppc) + v2x_polyarchy,
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt9 <- lm(reversr(v2exembez) ~ reversr(v2x_clphy),
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt10 <- lm(reversr(v2exembez) ~ reversr(v2x_clphy) + v2exl_legitperf,
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt11 <- lm(reversr(v2exembez) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                log(e_gdppc),
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt12 <- lm(reversr(v2exembez) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                log(e_gdppc) + v2x_polyarchy,
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt13 <- lm(reversr(v2exthftps) ~ reversr(v2x_clphy),
+              data = df1,
+              subset = democracy == 0)
+
+lm_alt14 <- lm(reversr(v2exthftps) ~ reversr(v2x_clphy) + v2exl_legitperf,
+               data = df1,
+               subset = democracy == 0)
+
+lm_alt15 <- lm(reversr(v2exthftps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                 log(e_gdppc),
+               data = df1,
+               subset = democracy == 0)
+
+lm_alt16 <- lm(reversr(v2exthftps) ~ reversr(v2x_clphy) + v2exl_legitperf +
+                 log(e_gdppc) + v2x_polyarchy,
+               data = df1,
+               subset = democracy == 0)
+
+modelsummary(list(lm_alt1, lm_alt2, lm_alt3, lm_alt4,
+                  lm_alt5, lm_alt6, lm_alt7, lm_alt8,
+                  lm_alt9, lm_alt10, lm_alt11, lm_alt12,
+                  lm_alt13, lm_alt14, lm_alt15, lm_alt16),
+             output = 'kableExtra',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             coef_map = c('reversr(v2x_clphy)' = 'Physical violence index',
+                          'v2exl_legitperf' = 'Performance legitimation',
+                          'log(e_gdppc)' = 'Logged GDP per capita',
+                          'v2x_polyarchy' = 'Electoral democracy index',
+                          '(Intercept)' = 'Intercept'),
+             gof_omit = 'BIC|Log.Lik.|RMSE|Std.Errors',
+             vcov = sandwich::NeweyWest,
+             title = "Corruption and political violence",
+             notes = list("Newey-West standard errors")) %>% 
+  add_header_above(c(" " = 1, "Low-level bribery" = 4, "High-level bribery" = 4,
+                     "High-level theft" = 4, "Low-level theft" = 4)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
