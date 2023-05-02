@@ -55,36 +55,18 @@ reversr <- function (x, na.rm = T) {
 # Introduction
 ## Background
 
-- Authoritarian regimes are generally corrupt.
+- Unpacking corruption into constituent parts
 
-- Their levels of corruption, however, are not always the same.
+- Two dimensions: nature of corruption, and level of corruption
 
-- Why is this the case?
+- Focusing on low-level bribery
+
+- Relationship with "competence of government" aspect of informational autocracy
 
 ## Introduction
 
 ```{r, fig.height=5}
-df_graphs %>% 
-  filter(., year == 2010 & class == "Authoritarian") %>% 
-  select(., c(v2x_libdem, v2x_corr, class, country_text_id)) %>% 
-  ggplot(., aes(x = v2x_libdem,
-                y = v2x_corr,
-                colour = class)) +
-  geom_point() +
-  geom_hline(yintercept = mean(df_master$v2x_corr[df_master$class == "Authoritarian"],
-                               na.rm = TRUE),
-             linetype = "dashed") +
-  geom_text_repel(aes(label = country_text_id),
-                  max.overlaps = 4,
-                  show.legend = FALSE) +
-  annotate("text", x = 0.245, y = 0.715, label = "Mean corruption") +
-  scale_colour_brewer(palette = "Dark2") +
-  labs(title = "Corruption among authoritarian regimes",
-       x = "Liberal Democracy Index",
-       y = "Corruption Index",
-       colour = "Regime type") +
-  theme_classic() +
-  theme(legend.position = "none")
+
 ```
 
 ## Research Question
@@ -125,34 +107,7 @@ Data drawn from the Varieties of Democracy Project [@vdem2022] and @geddes_wrigh
 ## Summary Statistics
 
 ```{r}
-means <- sapply(df_master[df_master$class == "Authoritarian", c("v2regdur", "v2x_corr", "v2x_libdem", "v2excrptps_osp",
-                     "v2exthftps_osp", "v2exbribe_osp", "v2exembez_osp", "v2clrspct_osp")],
-                mean, na.rm = T)
-sds <- sapply(df_master[df_master$class == "Authoritarian", c("v2regdur", "v2x_corr", "v2x_libdem", "v2excrptps_osp",
-                     "v2exthftps_osp", "v2exbribe_osp", "v2exembez_osp", "v2clrspct_osp")],
-                sd, na.rm = T)
-mins <- sapply(df_master[df_master$class == "Authoritarian", c("v2regdur", "v2x_corr", "v2x_libdem", "v2excrptps_osp",
-                     "v2exthftps_osp", "v2exbribe_osp", "v2exembez_osp", "v2clrspct_osp")],
-                min, na.rm = T)
-maxs <- sapply(df_master[df_master$class == "Authoritarian", c("v2regdur", "v2x_corr", "v2x_libdem", "v2excrptps_osp",
-                     "v2exthftps_osp", "v2exbribe_osp", "v2exembez_osp", "v2clrspct_osp")],
-                max, na.rm = T)
-names <- c("Regime duration (days)", "Corruption Index",
-           "Liberal Democracy Index", "Public sector bribery", "Public sector theft", "Executive bribery", "Executive theft", "Public administration impartiality")
-table1 <- tibble("Variable" = names,
-       "Mean" = means,
-       "Standard Deviation" = sds,
-       "Minimum" = mins,
-       "Maximum" = maxs)
 
-table1 %>%
-  kbl(., digits = 3, format.args = list(big.mark = ","),
-      caption = "Summary statistics for sample",
-      format = "latex",
-      booktabs = TRUE) %>%
-  kable_classic_2(.) %>% 
-  kable_styling(., bootstrap_options = "condensed",
-                font_size = 6)
 ```
 
 # Results
@@ -160,40 +115,11 @@ table1 %>%
 ## Results
 
 ```{r}
-fit1 <- lm(v2exbribe_osp ~ relevel(regimetype, ref = "3") +
-             log(regimeduration) + v2clrspct_osp + log(e_total_resources_income_pc+0.0001),
-           data = df_master)
-fit2 <- lm(v2exembez_osp ~ relevel(regimetype, ref = "3") +
-             log(regimeduration) + v2clrspct_osp + log(e_total_resources_income_pc+0.0001),
-           data = df_master)
-fit3 <- lm(v2excrptps_osp ~ relevel(regimetype, ref = "3") +
-             log(regimeduration) + v2clrspct_osp + log(e_total_resources_income_pc+0.0001),
-           data = df_master)
-fit4 <- lm(v2exthftps_osp ~ relevel(regimetype, ref = "3") +
-             log(regimeduration) + v2clrspct_osp + log(e_total_resources_income_pc+0.0001),
-           data = df_master)
 
-list1 <- list("Executive bribery" = fit1,
-              "Executive theft" = fit2,
-              "Public sector bribery" = fit3,
-              "Public sector theft" = fit4)
-
-modelsummary(list1,
-             coef_map = c('relevel(regimetype, ref = "3")2' = "Regime: Party",
-                          'relevel(regimetype, ref = "3")1' = "Regime: Personal",
-                           'log(regimeduration)' = 'Logged regime duration',
-                           'v2clrspct_osp' = 'Public administration impartiality',
-                           'log(e_total_resources_income_pc + 1e-04)' = 'Logged natural resource rents',
-                           '(Intercept)' = 'Intercept'),
-             gof_omit = c('AIC|BIC|Log.Lik|RMSE'),
-             stars = TRUE,
-             title = 'Regime types and types of corruption',
-             output = "kableExtra") %>%
-  kable_classic_2(.) %>% 
-  kable_styling(., bootstrap_options = "condensed",
-                font_size = 5.5)
 ```
 
 # Bibliography
 ## Bibliography
 
+::: {#refs}
+:::

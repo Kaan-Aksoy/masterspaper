@@ -145,7 +145,7 @@ In other words, pursuing the interests of rival elites is risky, even in the con
 
 This makes tackling low-level bribery a good avenue of being an "informational autocrat". I propose that as the cost of repression rises, autocratic regimes will resort to cracking down on low-level bribery as a means of creating the image of competence amongst the public they govern. Due to practical difficulties in measuring the cost of repression across various countries, I will operationalise this dependent variable as the political violence which takes place. My reasoning for this is that if political violence were possible and relatively easy to conduct, it would occur. Therefore, political violence which does not occur in the context of an authoritarian regime is taken as a sign that there are higher costs associated with it. 
 
-The nature of informational autocracies along with my proposed theory provides two hypothesis. The first one can be written as follows:
+The nature of informational autocracies along with my proposed theory provides two hypotheses. The first one can be written as follows:
 
 H$_1$: Higher costs of repression will cause lower values of low-level bribery.
 

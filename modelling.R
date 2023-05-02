@@ -5,8 +5,8 @@ library(estimatr)     # To cluster standard errors
 library(modelsummary) # For neat reporting tables
 library(kableExtra)   # For additional table formatting
 library(countrycode)  # Converting country coding schemes
-library(sandwich)
-library(lmtest)
+library(sandwich)     # Newey-West standard errors
+library(lmtest)       # To test for autocorrelation and heteroskedasticity
 
 # Load and clean data ----
 mydata1 <- read_csv("~/Documents/Data/V_Dem_v13.csv") %>% 
@@ -343,7 +343,7 @@ modelsummary(lm13,
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position") %>% 
   pack_rows("Region", start_row = 9, end_row = 25, bold = FALSE)
 
-# Appendix C, Newey-West errors ----
+# Appendix C, Newey-West (heteroskedasticity and autocorrelation consistent, HAC) errors ----
 lmA <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy),
           subset = (democracy == 0),
           data = df1)
@@ -387,6 +387,8 @@ modelsummary(list(lmA, lmB, lmC, lmD),
   add_header_above(c(" " = 1, "Low-level bribery" = 4)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
 
+
+## Models with all dimensions of corruption. ----
 lm_alt1 <- lm(reversr(v2excrptps) ~ reversr(v2x_clphy),
               data = df1,
               subset = democracy == 0)
@@ -459,6 +461,7 @@ lm_alt16 <- lm(reversr(v2exthftps) ~ reversr(v2x_clphy) + v2exl_legitperf +
                data = df1,
                subset = democracy == 0)
 
+# Report models with Newey-West standard errors (HAC) ----
 modelsummary(list(lm_alt1, lm_alt2, lm_alt3, lm_alt4,
                   lm_alt5, lm_alt6, lm_alt7, lm_alt8,
                   lm_alt9, lm_alt10, lm_alt11, lm_alt12,
@@ -477,6 +480,3 @@ modelsummary(list(lm_alt1, lm_alt2, lm_alt3, lm_alt4,
   add_header_above(c(" " = 1, "Low-level bribery" = 4, "High-level bribery" = 4,
                      "High-level theft" = 4, "Low-level theft" = 4)) %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
-
-##
-
