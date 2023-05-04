@@ -197,7 +197,7 @@ datasummary((`Low-level bribery` = v2excrptps) +
               (`Time required to open business (days)` = businessdays) +
               (`Natural resource income as % of GDP` = naturalresourcerents) ~
               (Mean + SD + Max + Min + N), # Capital letters are important, these default na.rm = T
-            data = df1,
+            data = subset(df1, democracy == 0),
             output = 'kableExtra',
             title = "Descriptive statistics for variables") %>% 
   kable_styling(bootstrap_options = "condensed", latex_options = "HOLD_position")
