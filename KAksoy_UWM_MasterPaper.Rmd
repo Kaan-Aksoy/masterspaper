@@ -1,12 +1,12 @@
 ---
-title: "The Cost of Repression: Bribery, Competence, and Informational Autocrats"
-author: "Kaan Aksoy"
-date: "4th May 2023"
+title: ""
 mainfont: Times New Roman
+fontsize: 11pt
 header-includes:
   - \usepackage{setspace}\doublespacing
   - \usepackage{booktabs}
   - \usepackage{float}
+  - \usepackage{tocbibind}
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -17,31 +17,30 @@ indent: true
 citation_package: biblatex
 bibliography: thesiscitations.bib
 ---
-
-```{=tex}
-\pagenumbering{gobble}
+\input{titlepage.tex}
+\pagenumbering{roman}
+\thispagestyle{empty}
 \newpage
-```
-## Abstract
+
+# Abstract
 
 As the third wave of democratisation slows down and seems to be reversing, we nevertheless observe that heavy-handed repression, mass killing, and regime-perpetrated violence is decreasing. Autocracies and autocracy-bordering hybrid regimes increasingly rely on smarter, less repressive, targeted, yet still undemocratic means of maintaining an uneven political playing field.
 
 In my research, I aim to focus on this specific type of autocrat and autocratic regime. In doing so, I utilise the theory of informational autocracy, which states that autocracies faced with a more affluent "informed elite" will resort to less direct means of repression, and will seek to convince its constituents through an image of competence, real or fabricated. I propose that cracking down on low-level (or "street-level") bribery is an important and noticeable aspect of competence, and therefore that these regimes will seek to decrease low-level bribery to maintain an image of competence. Using data from the Varieties of Democracy Project, I test two hypotheses relating to this theory. I find that political violence has a positive relationship to low-level bribery.
 
 My research contributes to the literature bridging authoritarianism and corruption, as well as literature on corruption itself by unpacking the conceptual bundle of "corruption" into its constituent parts, focusing on the political implications of one aspect of corruption. Therefore, it enables future research to focus on policy implications on how to tackle corruption more precisely, instead of viewing it as a monolithic whole that needs to be dealt with all at once.
-
 \newpage
-```{=tex}
+\renewcommand{\contentsname}{Table of Contents}
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
 \pagenumbering{arabic}
-```
+
 ```{r global-options, include=FALSE}
-knitr::opts_chunk$set(
-	echo = FALSE,
-	message = FALSE,
-	warning = FALSE,
-	include = FALSE,
-	fig.pos = 'H'
-)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,	include = FALSE)
 options(knitr.table.format = "latex")
 ```
 ```{r library-loading}
@@ -65,7 +64,7 @@ reversr <- function (x, na.rm = T) {
 }
 ```
 
-## Introduction
+# Introduction
 
 Particularly after the end of the Cold War, completely closed regimes have gotten fewer and fewer. As the third wave of democratisation slowed down, and some regimes sunk back into authoritarianism, a new form of authoritarian regime became dominant. Straddling the line between hybrid regimes and autocratic regimes, these new regimes such as those of Hungary, Turkey, and Poland have been given a variety of names, but chief among them has been "competitive authoritarian". Others, like Russia, are not quite competitive, but have also embraced the common unifying property of these new authoritarian regimes.
 
@@ -85,7 +84,7 @@ I find that there is a statistically significant relationship between political 
 
 This research has substantial policy implications on the way we deal with corruption. When we conceptualise corruption not as a bundle of issues but instead as a group of different political behaviours, we become better equipped to tackle the individual problems that arise as a result. In other words, decoupling types of corruption from one another allows the formulation of specific policies per issue, as opposed to trying to tackle the entire concept wholesale.
 
-## Authoritarian Governments and Corruption
+# Authoritarian Governments and Corruption
 
 Much of the literature on corruption in authoritarian systems either focuses on how authoritarian governments prevent corruption, or what function corruption serves within an authoritarian system. Perspectives closer to the economics discipline view bribery as a bargaining process between individuals and the state [@wang2014] or as a consequence of poor institutionalisation of property rights [@johnson2000;@marcouiller1995]. While these studies shed much-needed light on the economic conditions which generate bribery in countries, they often do not deal with the political causes and consequences of corrupt practices.
 
@@ -121,7 +120,7 @@ When phrased so, it is not difficult to understand why studying these two concep
 
 Low-level bribery captures a specific aspect of citizen views towards their governments in that it tends to be closer to ordinary people living their lives. Most people do not live out their lives thinking of their place in history or the grander scale of their country, but instead through daily, established routines [@przeworski2022]; having to pay bribes on the way home from work is far more likely to bother a person than the relatively abstract idea of a government minister illegally taking cuts of profit from a construction company he has never heard of.
 
-## Informational Autocracy and Corruption
+# Informational Autocracy and Corruption
 
 In order to establish the link between political violence and low-level bribery, I draw on the idea of informational autocracy. In this framework, rulers do not seek to impose a certain world-view upon the ruled, as Stalin, Mao, or Hitler did; they seek only to impose the impression of competence upon the ruled [@guriev2019, p. 101]. There is a reason for this. Increasingly, heavy-handed methods of forcing compliance or consent with an autocratic regime is costly. These costs may be incurred in the domestic arena, or the international arena.
 
@@ -155,7 +154,7 @@ The second hypothesis relates to an informational autocrat's reluctance to utili
 
 H$_2$: Higher rates of regime legitimisation on performance grounds will cause lower values of low-level bribery.
 
-## Data and Research Design
+# Data and Research Design
 
 In order to test the hypotheses laid out in the previous section, I will draw on a number of different data. First and foremost, the Varieties of Democracy Dataset [@vdem2023] is used for a vast majority of this paper. The Varieties of Democracy (V-Dem) data is an expert-coded database encompassing virtually every state from the 19th century onwards. It contains more than 4,500 variables in a country-year format, gauging various aspects of a state, from its concentration of political power to its levels of educational indoctrination.
 
@@ -209,7 +208,7 @@ The models used in the paper are ordinary least squares (OLS) regressions with t
 
 I address autocorrelation over time by clustering standard errors by country. This addresses autocorrelation across country units. Appendix C includes the models used for hypothesis testing with Newey-West standard errors instead of clustered standard errors as a robustness check. The Newey-West method of calculating standard errors accounts for both heteroskedasticity and autocorrelation (referred to as "heteroskedasticity and autocorrelation consistent", or "HAC" errors), therefore making these models more robust when both issues are present at the same time. The difference between the models used in the body of the paper (standard errors clustered by country) and the ones provided in Appendix C (Newey-West standard errors) are unsubstantial.
 
-## Analysis
+# Analysis
 
 I initially construct four different models with an increasing number of variables. In all of the following models, shown in Table 2, low-level bribery is the dependent variable. On its own, it is seen that physical violence has a positive and statistically significant effect on low-level bribery. In more substantive terms, higher rates of physical violence generate higher rates of low-level bribery.
 
@@ -400,7 +399,7 @@ Even though the sample size is most likely responsible for less-than-ideal resul
 
 There is a significant caveat to this model: the number of days to open a business is certainly an imperfect measure. Other factors can be involved in lengthening the duration of opening a business, and this model by itself---even if we accept a 95% confidence interval as being sufficient---should not be taken as substantial evidence of a causal relationship. One alternative that comes to mind with this model is simply an inefficient, bogged-down bureaucracy, one that isn't necessarily corrupt but simply incompetent at its job. Such a bureaucracy would generate longer durations without being indicative of higher levels of corruption.
 
-## Results and Discussion
+# Results and Discussion
 
 Overall, the models demonstrate that there is a significant---both statistical and substantial---relationship between political violence and low-level bribery. The first set of models clearly demonstrates that as political violence in autocracies rise, so too does low-level bribery. This persists through other models, even as we add in control variables such as the electoral democracy index.
 
@@ -448,7 +447,7 @@ df1 %>%
   theme_bw()
 ```
 
-## Conclusion
+# Conclusion
 
 Modern authoritarian states are increasingly characterised by a preference for subtler, less heavy-handed methods of maintaining power. Where repressive methods are used, they are often targeted, precise, and specific. Rarely do such states unleash security forces on protests or resort to mass incarceration. Instead, they use media to manipulate opinions, harass journalists using legal cases and intimidation, encourage auto-censorship, and come up with creative methods to prevent mass, organised protest from materialising in the first place. In addition, they are rarely built upon a foundation of ideological conviction, but instead are established on more practical grounds such as the efficient delivery of public goods.
 
@@ -466,16 +465,16 @@ The key substantial implication of this research is that there is value in tackl
 
 \newpage
 
-## References
+# References
 
 ::: {#refs} 
 :::
 
 \newpage
 
-## Appendices
+# Appendices
 
-### Appendix A
+## Appendix A
 
 I provide a correlation table of the primary variables of interest. The correlation between electoral democracy and the physical violence index is unremarkable---it is precisely what we expect---but the point of interest here is the correlation between low-level bribery and physical violence index. I believe that this correlation is sufficient reason to investigate further, hence the focus on physical violence as a variable.
 
@@ -492,7 +491,7 @@ df1 %>%
                 full_width = FALSE)
 ```
 \newpage
-### Appendix B
+## Appendix B
 
 The model provided in this appendix utilises a different independent variable to capture the cost of repression. Data on mass killings perpetrated by the state from @guriev2019 is used to create a lagged variable of mass killing. To be more specific, the variable "mass killing" is a dichotomous variable coded "1" if the state has had a mass killing event in the last five years, and "0" otherwise. This variable was not used as a part of the primary analyses due to its limited ability to reflect the variation in political violence.
 ```{r masskilling-model}
@@ -532,7 +531,7 @@ modelsummary(lm13,
   pack_rows("Region", start_row = 9, end_row = 25, bold = FALSE)
 ```
 
-### Appendix C
+## Appendix C
 
 The main part of the paper utilises standard errors clustered by country for its analyses. This appendix includes the primary five models used in the paper, albeit with Newey-West standard errors as opposed to clustered standard errors as an additional robustness check. There are no substantially different results compared to the models in the main section of the paper.
 
